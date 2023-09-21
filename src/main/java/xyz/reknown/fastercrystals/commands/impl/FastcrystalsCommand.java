@@ -22,7 +22,7 @@ public class FastcrystalsCommand extends AbstractCommand {
     public void register() {
         new CommandAPICommand(name)
                 .withOptionalArguments(new BooleanArgument("toggle"))
-                .withPermission("duelsplugin.fastcrystals")
+                .withPermission("fastercrystals.fastcrystals")
                 .executesPlayer(this::run)
                 .register();
     }
