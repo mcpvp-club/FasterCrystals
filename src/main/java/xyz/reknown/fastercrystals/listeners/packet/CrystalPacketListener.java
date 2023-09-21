@@ -112,7 +112,8 @@ public class CrystalPacketListener extends PacketListenerAbstract {
                     || wrapper.getAction() == DiggingAction.DROP_ITEM_STACK) {
                 this.ignoreAnim.add(player.getUniqueId());
             } else this.ignoreAnim.remove(player.getUniqueId());
-        } else if (event.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT) {
+        } else if (event.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
+                || event.getPacketType() == PacketType.Play.Client.USE_ITEM) {
             this.ignoreAnim.add(player.getUniqueId());
         } else if (player != null) this.ignoreAnim.remove(player.getUniqueId());
     }
