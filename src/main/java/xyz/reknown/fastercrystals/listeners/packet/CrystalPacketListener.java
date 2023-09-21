@@ -35,7 +35,6 @@ public class CrystalPacketListener extends PacketListenerAbstract {
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
-        JavaPlugin.getPlugin(FasterCrystals.class).getLogger().info(event.getPacketType().getName());
         if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
             handleInteractEntity(event);
         } else if (event.getPacketType() == PacketType.Play.Client.ANIMATION) {
