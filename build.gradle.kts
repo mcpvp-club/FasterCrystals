@@ -36,6 +36,7 @@ dependencies {
     // Dependencies you don't want to include go in the compileOnly configuration.
     // Make sure to relocate shaded dependencies!
     implementation("com.github.retrooper.packetevents:spigot:2.0.2")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.1.0")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
@@ -83,5 +84,6 @@ tasks {
         minimize()
         relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
         relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
+        relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
     }
 }

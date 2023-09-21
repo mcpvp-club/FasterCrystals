@@ -19,6 +19,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
@@ -46,6 +48,10 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             if (wrapper.getAction() != WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return;
 
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+            PersistentDataContainer pdc = player.getPersistentDataContainer();
+            NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
+            if (pdc.has(key) && !pdc.get(key, PersistentDataType.BOOLEAN)) return;
+
             ItemStack item;
             if (wrapper.getHand() == InteractionHand.MAIN_HAND) item = player.getInventory().getItemInMainHand();
             else item = player.getInventory().getItemInOffHand();
@@ -69,6 +75,10 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) return; // ignore weakness hits, tool hits are slow anyway
 
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+            PersistentDataContainer pdc = player.getPersistentDataContainer();
+            NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
+            if (pdc.has(key) && !pdc.get(key, PersistentDataType.BOOLEAN)) return;
+
             Bukkit.getScheduler().runTask(plugin, () -> {
                 RayTraceResult result = player.getWorld().rayTraceEntities(
                         player.getEyeLocation(),

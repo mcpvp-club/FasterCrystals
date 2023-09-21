@@ -1,6 +1,8 @@
 package xyz.reknown.fastercrystals;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.duelsplugin.api.CrystalAPI;
+import xyz.reknown.fastercrystals.commands.impl.FastcrystalsCommand;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntitySpawnListener;
 import xyz.reknown.fastercrystals.listeners.packet.CrystalPacketListener;
@@ -28,6 +31,8 @@ public class FasterCrystals extends JavaPlugin {
     public void onLoad() {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().load();
+
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
 
     @Override
@@ -37,6 +42,9 @@ public class FasterCrystals extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("DuelsPlugin") != null) {
             this.crystalApi = getServer().getServicesManager().load(CrystalAPI.class);
         }
+
+        CommandAPI.onEnable();
+        new FastcrystalsCommand().register();
 
         getServer().getPluginManager().registerEvents(new EntityRemoveFromWorldListener(), this);
         getServer().getPluginManager().registerEvents(new EntitySpawnListener(), this);
@@ -48,6 +56,7 @@ public class FasterCrystals extends JavaPlugin {
     @Override
     public void onDisable() {
         PacketEvents.getAPI().terminate();
+        CommandAPI.onDisable();
     }
 
     public void addCrystal(int entityId, EnderCrystal entity) {
