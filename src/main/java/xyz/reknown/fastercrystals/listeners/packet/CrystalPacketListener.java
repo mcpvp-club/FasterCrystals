@@ -108,11 +108,12 @@ public class CrystalPacketListener extends PacketListenerAbstract {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
         Player player = (Player) event.getPlayer();
         User user = plugin.getUsers().get(player);
-        if (user.getLastPacket() == AnimPackets.IGNORE) return; // animation is for drop item/placement/use item
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) return; // ignore weakness hits, tool hits are slow anyway
         if (!user.isFastCrystals()) return;
 
         Bukkit.getScheduler().runTask(plugin, () -> {
+            if (user.getLastPacket() == AnimPackets.IGNORE) return; // animation is for drop item/placement/use item
+
             Location eyeLoc = player.getEyeLocation();
             RayTraceResult result = player.getWorld().rayTraceEntities(
                     eyeLoc,
