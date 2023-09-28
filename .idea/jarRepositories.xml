@@ -31,5 +31,25 @@
       <option name="name" value="maven2" />
       <option name="url" value="https://repo.repsy.io/mvn/jyguy/default" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
+      <option name="url" value="https://papermc.io/repo/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="paperweightParamMappingsRepository" />
+      <option name="name" value="paperweightParamMappingsRepository" />
+      <option name="url" value="https://maven.fabricmc.net/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="paperweightDecompilerRepository" />
+      <option name="name" value="paperweightDecompilerRepository" />
+      <option name="url" value="https://files.minecraftforge.net/maven/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
+      <option name="url" value="https://libraries.minecraft.net/" />
+    </remote-repository>
   </component>
 </project>
