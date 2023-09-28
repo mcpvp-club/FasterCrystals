@@ -9,6 +9,7 @@ import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
 import xyz.reknown.fastercrystals.user.User;
@@ -125,7 +127,7 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             Entity entity = result.getHitEntity();
             if (entity == null || entity.getType() != EntityType.ENDER_CRYSTAL) return;
 
-            /*RayTraceResult bResult = player.rayTraceBlocks(player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+            RayTraceResult bResult = player.rayTraceBlocks(player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
             if (bResult != null) {
                 Block block = bResult.getHitBlock();
                 Vector eyeLocV = eyeLoc.toVector();
@@ -141,7 +143,7 @@ public class CrystalPacketListener extends PacketListenerAbstract {
                         return;
                     }
                 }
-            }*/
+            }
 
             plugin.getDamager().damage(entity, player);
         });
