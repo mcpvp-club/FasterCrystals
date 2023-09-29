@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
+import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import org.bukkit.*;
@@ -43,30 +44,7 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             User user = plugin.getUsers().get(player);
             if (user == null) return;
 
-            WrapperPlayClientPlayerDigging wrapper;
-            if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
-                wrapper = new WrapperPlayClientPlayerDigging(event);
-            } else wrapper = null;
-
-            // Run on main thread since the other listeners must happen (which runs on the main thread) before this one
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
-                    if (wrapper.getAction() == DiggingAction.DROP_ITEM
-                            || wrapper.getAction() == DiggingAction.DROP_ITEM_STACK) {
-                        user.setLastPacket(AnimPackets.IGNORE);
-                        return;
-                    } else if (wrapper.getAction() == DiggingAction.START_DIGGING) {
-                        user.setLastPacket(AnimPackets.START_DIGGING);
-                        return;
-                    }
-                } else if (event.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
-                        || event.getPacketType() == PacketType.Play.Client.USE_ITEM) {
-                    user.setLastPacket(AnimPackets.IGNORE);
-                    return;
-                }
-
-                user.setLastPacket(AnimPackets.MISC);
-            });
+            setLastPacket(user, event);
         }
     }
 
@@ -138,14 +116,54 @@ public class CrystalPacketListener extends PacketListenerAbstract {
                     }
 
                     // If true, it is in the middle of breaking a block
-                    // We only want the beginning of left click inputs
-                    if (user.getLastPacket() != AnimPackets.START_DIGGING) {
+                    // We only want the beginning of left click inputs (begin mining or attack)
+                    if (user.getLastPacket() != AnimPackets.START_DIGGING && user.getLastPacket() != AnimPackets.ATTACK) {
                         return;
                     }
                 }
             }
 
             plugin.getDamager().damage(entity, player);
+        });
+    }
+
+    private void setLastPacket(User user, PacketReceiveEvent event) {
+        FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+
+        // Initialize wrappers before leaving thread to be used in main thread
+        // Could just clone the event, unsure of performance penalties
+        PacketWrapper<?> genericWrapper;
+        if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
+            genericWrapper = new WrapperPlayClientPlayerDigging(event);
+        } else if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
+            genericWrapper = new WrapperPlayClientInteractEntity(event);
+        } else genericWrapper = null;
+
+        // Run on main thread since the other listeners must happen (which runs on the main thread) before this one
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
+                WrapperPlayClientPlayerDigging wrapper = (WrapperPlayClientPlayerDigging) genericWrapper;
+                if (wrapper.getAction() == DiggingAction.DROP_ITEM
+                        || wrapper.getAction() == DiggingAction.DROP_ITEM_STACK) {
+                    user.setLastPacket(AnimPackets.IGNORE);
+                    return;
+                } else if (wrapper.getAction() == DiggingAction.START_DIGGING) {
+                    user.setLastPacket(AnimPackets.START_DIGGING);
+                    return;
+                }
+            } else if (event.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
+                    || event.getPacketType() == PacketType.Play.Client.USE_ITEM) {
+                user.setLastPacket(AnimPackets.IGNORE);
+                return;
+            } else if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
+                WrapperPlayClientInteractEntity wrapper = (WrapperPlayClientInteractEntity) genericWrapper;
+                if (wrapper.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
+                    user.setLastPacket(AnimPackets.ATTACK);
+                    return;
+                }
+            }
+
+            user.setLastPacket(AnimPackets.MISC);
         });
     }
 }
