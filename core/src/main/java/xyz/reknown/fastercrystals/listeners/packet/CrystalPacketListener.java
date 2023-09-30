@@ -105,20 +105,25 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             Entity entity = result.getHitEntity();
             if (entity == null || entity.getType() != EntityType.ENDER_CRYSTAL) return;
 
-            RayTraceResult bResult = player.rayTraceBlocks(player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
-            if (bResult != null) {
-                Block block = bResult.getHitBlock();
-                Vector eyeLocV = eyeLoc.toVector();
-                if (block != null) {
-                    // Check if a block was in front of the end crystal
-                    if (eyeLocV.distanceSquared(bResult.getHitPosition()) <= eyeLocV.distanceSquared(result.getHitPosition())) {
-                        return;
-                    }
+            // Raytrace entity obtains position on the other side of the bounding box when the player eye location is
+            //     within the bounding box. This causes the distance check to false positive.
+            // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
+            if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
+                RayTraceResult bResult = player.rayTraceBlocks(player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+                if (bResult != null) {
+                    Block block = bResult.getHitBlock();
+                    Vector eyeLocV = eyeLoc.toVector();
+                    if (block != null) {
+                        // Check if a block was in front of the end crystal
+                        if (eyeLocV.distanceSquared(bResult.getHitPosition()) <= eyeLocV.distanceSquared(result.getHitPosition())) {
+                            return;
+                        }
 
-                    // If true, it is in the middle of breaking a block
-                    // We only want the beginning of left click inputs (begin mining or attack)
-                    if (user.getLastPacket() != AnimPackets.START_DIGGING && user.getLastPacket() != AnimPackets.ATTACK) {
-                        return;
+                        // If true, it is in the middle of breaking a block
+                        // We only want the beginning of left click inputs (begin mining or attack)
+                        if (user.getLastPacket() != AnimPackets.START_DIGGING && user.getLastPacket() != AnimPackets.ATTACK) {
+                            return;
+                        }
                     }
                 }
             }
