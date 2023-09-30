@@ -108,6 +108,10 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             Entity entity = result.getHitEntity();
             if (entity == null || entity.getType() != EntityType.ENDER_CRYSTAL) return;
 
+            // Ignore if the entity was spawned in the same tick
+            // This is to avoid "double popping" situations; see https://github.com/mcpvp-club/FasterCrystals/issues/3
+            if (entity.getTicksLived() == 0) return;
+
             // Raytrace entity obtains position on the other side of the bounding box when the player eye location is
             //     within the bounding box. This causes the distance check to false positive.
             // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
