@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.ICrystalDamager;
+import xyz.reknown.fastercrystals.api.IPickableChecker;
 import xyz.reknown.fastercrystals.commands.impl.FastcrystalsCommand;
 import xyz.reknown.fastercrystals.damager.*;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener;
@@ -22,6 +23,7 @@ import xyz.reknown.fastercrystals.listeners.bukkit.EntitySpawnListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.PlayerJoinListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.PlayerQuitListener;
 import xyz.reknown.fastercrystals.listeners.packet.CrystalPacketListener;
+import xyz.reknown.fastercrystals.pickable.*;
 import xyz.reknown.fastercrystals.user.Users;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 public class FasterCrystals extends JavaPlugin {
     @Getter private ICrystalDamager damager;
+    @Getter private IPickableChecker pickableChecker;
     @Getter private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
 
@@ -47,24 +50,31 @@ public class FasterCrystals extends JavaPlugin {
         switch (Bukkit.getMinecraftVersion()) {
             case "1.20.1": case "1.20":
                 damager = new CrystalDamager_1_20_R1();
+                pickableChecker = new PickableChecker_1_20_R1();
                 break;
             case "1.19.4":
                 damager = new CrystalDamager_1_19_R3();
+                pickableChecker = new PickableChecker_1_19_R3();
                 break;
             case "1.19.3":
                 damager = new CrystalDamager_1_19_R2();
+                pickableChecker = new PickableChecker_1_19_R2();
                 break;
             case "1.19.2": case "1.19.1": case "1.19":
                 damager = new CrystalDamager_1_19_R1();
+                pickableChecker = new PickableChecker_1_19_R1();
                 break;
             case "1.18.2":
                 damager = new CrystalDamager_1_18_R2();
+                pickableChecker = new PickableChecker_1_18_R2();
                 break;
             case "1.18.1": case "1.18":
                 damager = new CrystalDamager_1_18_R1();
+                pickableChecker = new PickableChecker_1_18_R1();
                 break;
             case "1.17.1":
                 damager = new CrystalDamager_1_17_R1();
+                pickableChecker = new PickableChecker_1_17_R1();
                 break;
             default:
                 throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.20.1");
