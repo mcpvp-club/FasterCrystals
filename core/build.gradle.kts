@@ -73,5 +73,6 @@ tasks {
         relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
         relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
         relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
+        from("../LICENSE")
     }
 }
