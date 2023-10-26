@@ -12,7 +12,7 @@ java {
 
 repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
-    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+    maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
 }
 
 dependencies {
@@ -22,6 +22,7 @@ dependencies {
     // Dependencies you don't want to include go in the compileOnly configuration.
     // Make sure to relocate shaded dependencies!
     implementation(project(":api"))
+    implementation(project(":v1_20_2", "reobf"))
     implementation(project(":v1_20", "reobf"))
     implementation(project(":v1_19_4", "reobf"))
     implementation(project(":v1_19_3", "reobf"))
@@ -30,10 +31,10 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.0.2") {
+    implementation("com.github.retrooper.packetevents:spigot:2.1.0-SNAPSHOT") {
         exclude("net.kyori") // already bundled in paper
     }
-    implementation("dev.jorel:commandapi-bukkit-shade:9.1.0")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.2.0")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
