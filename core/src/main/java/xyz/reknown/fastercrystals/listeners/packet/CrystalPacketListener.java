@@ -6,7 +6,6 @@ import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
-import com.github.retrooper.packetevents.wrapper.PacketWrapper;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import org.bukkit.*;
@@ -142,19 +141,13 @@ public class CrystalPacketListener extends PacketListenerAbstract {
     private void setLastPacket(User user, PacketReceiveEvent event) {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
 
-        // Initialize wrappers before leaving thread to be used in main thread
-        // Could just clone the event, unsure of performance penalties
-        PacketWrapper<?> genericWrapper;
-        if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
-            genericWrapper = new WrapperPlayClientPlayerDigging(event);
-        } else if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
-            genericWrapper = new WrapperPlayClientInteractEntity(event);
-        } else genericWrapper = null;
+        // Must clone for main thread usage
+        PacketReceiveEvent copy = event.clone();
 
         // Run on main thread since the other listeners must happen (which runs on the main thread) before this one
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
-                WrapperPlayClientPlayerDigging wrapper = (WrapperPlayClientPlayerDigging) genericWrapper;
+            if (copy.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
+                WrapperPlayClientPlayerDigging wrapper = new WrapperPlayClientPlayerDigging(copy);
                 if (wrapper.getAction() == DiggingAction.DROP_ITEM
                         || wrapper.getAction() == DiggingAction.DROP_ITEM_STACK) {
                     user.setLastPacket(AnimPackets.IGNORE);
@@ -163,12 +156,12 @@ public class CrystalPacketListener extends PacketListenerAbstract {
                     user.setLastPacket(AnimPackets.START_DIGGING);
                     return;
                 }
-            } else if (event.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
-                    || event.getPacketType() == PacketType.Play.Client.USE_ITEM) {
+            } else if (copy.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
+                    || copy.getPacketType() == PacketType.Play.Client.USE_ITEM) {
                 user.setLastPacket(AnimPackets.IGNORE);
                 return;
-            } else if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
-                WrapperPlayClientInteractEntity wrapper = (WrapperPlayClientInteractEntity) genericWrapper;
+            } else if (copy.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
+                WrapperPlayClientInteractEntity wrapper = new WrapperPlayClientInteractEntity(copy);
                 if (wrapper.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
                     user.setLastPacket(AnimPackets.ATTACK);
                     return;
@@ -176,6 +169,9 @@ public class CrystalPacketListener extends PacketListenerAbstract {
             }
 
             user.setLastPacket(AnimPackets.MISC);
+
+            // Avoid memory leaks
+            copy.cleanUp();
         });
     }
 }
