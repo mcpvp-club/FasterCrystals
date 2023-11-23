@@ -22,7 +22,9 @@ import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener
 import xyz.reknown.fastercrystals.listeners.bukkit.EntitySpawnListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.PlayerJoinListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.PlayerQuitListener;
-import xyz.reknown.fastercrystals.listeners.packet.CrystalPacketListener;
+import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
+import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
+import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
 import xyz.reknown.fastercrystals.pickable.*;
 import xyz.reknown.fastercrystals.user.Users;
 
@@ -99,7 +101,9 @@ public class FasterCrystals extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
-        PacketEvents.getAPI().getEventManager().registerListener(new CrystalPacketListener());
+        PacketEvents.getAPI().getEventManager().registerListener(new AnimationListener());
+        PacketEvents.getAPI().getEventManager().registerListener(new InteractEntityListener());
+        PacketEvents.getAPI().getEventManager().registerListener(new LastPacketListener());
         PacketEvents.getAPI().init();
     }
 
