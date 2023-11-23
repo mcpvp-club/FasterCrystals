@@ -40,6 +40,9 @@ public class FasterCrystals extends JavaPlugin {
     @Override
     public void onLoad() {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().getSettings()
+                .checkForUpdates(false)
+                .reEncodeByDefault(false);
         PacketEvents.getAPI().load();
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
