@@ -10,9 +10,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
 
+@Getter
 public class User {
-    @Getter private final Player player;
-    @Getter @Setter private AnimPackets lastPacket;
+    private final Player player;
+    @Setter private AnimPackets lastPacket;
+    @Setter private boolean ignoreAnim;
 
     public User(Player player) {
         this.player = player;

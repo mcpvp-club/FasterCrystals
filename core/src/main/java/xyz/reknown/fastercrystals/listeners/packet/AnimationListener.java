@@ -29,8 +29,10 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) return; // ignore weakness hits, tool hits are slow anyway
         if (user == null || !user.isFastCrystals()) return;
 
+        AnimPackets lastPacket = user.getLastPacket();
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (user.getLastPacket() == AnimPackets.IGNORE) return; // animation is for drop item/placement/use item
+            if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
+            if (user.isIgnoreAnim()) return;; // animation is for inventory drop item
 
             Location eyeLoc = player.getEyeLocation();
             RayTraceResult result = player.getWorld().rayTraceEntities(
@@ -73,7 +75,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
 
                         // If true, it is in the middle of breaking a block
                         // We only want the beginning of left click inputs (begin mining or attack)
-                        if (user.getLastPacket() != AnimPackets.START_DIGGING && user.getLastPacket() != AnimPackets.ATTACK) {
+                        if (lastPacket != AnimPackets.START_DIGGING && lastPacket != AnimPackets.ATTACK) {
                             return;
                         }
                     }
