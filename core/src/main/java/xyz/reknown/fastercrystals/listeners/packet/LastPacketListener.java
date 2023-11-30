@@ -35,29 +35,31 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
         // We want it in this order: AnimationListener -> LastPacketListener so that AnimationListener can read the
         //     packet prior to this one
         Bukkit.getScheduler().runTask(plugin, () -> {
+            boolean handled = false;
+
             if (copy.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
                 WrapperPlayClientPlayerDigging wrapper = new WrapperPlayClientPlayerDigging(copy);
                 if (wrapper.getAction() == DiggingAction.DROP_ITEM
                         || wrapper.getAction() == DiggingAction.DROP_ITEM_STACK) {
                     user.setLastPacket(AnimPackets.IGNORE);
-                    return;
+                    handled = true;
                 } else if (wrapper.getAction() == DiggingAction.START_DIGGING) {
                     user.setLastPacket(AnimPackets.START_DIGGING);
-                    return;
+                    handled = true;
                 }
             } else if (copy.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
                     || copy.getPacketType() == PacketType.Play.Client.USE_ITEM) {
                 user.setLastPacket(AnimPackets.IGNORE);
-                return;
+                handled = true;
             } else if (copy.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
                 WrapperPlayClientInteractEntity wrapper = new WrapperPlayClientInteractEntity(copy);
                 if (wrapper.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
                     user.setLastPacket(AnimPackets.ATTACK);
-                    return;
+                    handled = true;
                 }
             }
 
-            user.setLastPacket(AnimPackets.MISC);
+            if (!handled) user.setLastPacket(AnimPackets.MISC);
 
             // Avoid memory leaks
             copy.cleanUp();
