@@ -12,7 +12,7 @@ java {
 
 repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
-    maven { url = uri("https://repo.codemc.io/repository/maven-snapshots/") }
+    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
 }
 
 dependencies {
@@ -31,7 +31,7 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.1.0-SNAPSHOT") {
+    implementation("com.github.retrooper.packetevents:spigot:2.2.0") {
         exclude("net.kyori") // already bundled in paper
     }
     implementation("dev.jorel:commandapi-bukkit-shade:9.2.0")
