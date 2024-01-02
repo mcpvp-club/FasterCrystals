@@ -6,6 +6,7 @@ rootProject.name = "FasterCrystals"
 
 include("api")
 include("core")
+include("v1_20_3")
 include("v1_20_2")
 include("v1_20")
 include("v1_19_4")

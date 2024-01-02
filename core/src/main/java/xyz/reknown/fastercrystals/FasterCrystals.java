@@ -53,6 +53,10 @@ public class FasterCrystals extends JavaPlugin {
     @Override
     public void onEnable() {
         switch (Bukkit.getMinecraftVersion()) {
+            case "1.20.4": case "1.20.3":
+                damager = new CrystalDamager_1_20_R3();
+                pickableChecker = new PickableChecker_1_20_R3();
+                break;
             case "1.20.2":
                 damager = new CrystalDamager_1_20_R2();
                 pickableChecker = new PickableChecker_1_20_R2();
@@ -86,7 +90,7 @@ public class FasterCrystals extends JavaPlugin {
                 pickableChecker = new PickableChecker_1_17_R1();
                 break;
             default:
-                throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.20.2");
+                throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.20.4");
         }
 
         this.crystalIds = new HashMap<>();
