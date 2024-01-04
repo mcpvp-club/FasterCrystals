@@ -35,7 +35,7 @@ dependencies {
     implementation("com.github.retrooper.packetevents:spigot:2.2.0") {
         exclude("net.kyori") // already bundled in paper
     }
-    implementation("dev.jorel:commandapi-bukkit-shade:9.2.0")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
