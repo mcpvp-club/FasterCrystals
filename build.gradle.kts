@@ -3,5 +3,5 @@ plugins {
 }
 
 group = "xyz.reknown.fastercrystals"
-version = "1.4.1"
+version = "1.4.2"
 description = "Uses packets to manually break/place crystals"
