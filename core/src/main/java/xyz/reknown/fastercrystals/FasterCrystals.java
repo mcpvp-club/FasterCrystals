@@ -32,6 +32,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.reknown.duelsplugin.api.CrystalAPI;
 import xyz.reknown.fastercrystals.api.ICrystalDamager;
 import xyz.reknown.fastercrystals.api.IPickableChecker;
 import xyz.reknown.fastercrystals.api.IRange;
@@ -62,6 +63,7 @@ public class FasterCrystals extends JavaPlugin {
     @Getter private IRange range;
     @Getter private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
+    private CrystalAPI crystalApi;
 
     @Override
     public void onLoad() {
@@ -132,6 +134,10 @@ public class FasterCrystals extends JavaPlugin {
 
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
 
+        if (getServer().getPluginManager().getPlugin("DuelsPlugin") != null) {
+            this.crystalApi = getServer().getServicesManager().load(CrystalAPI.class);
+        }
+
         this.users = new Users();
 
         CommandAPI.onEnable();
@@ -176,7 +182,10 @@ public class FasterCrystals extends JavaPlugin {
         clonedLoc.add(0.5, 1.0, 0.5);
         List<Entity> nearbyEntities = new ArrayList<>(clonedLoc.getWorld().getNearbyEntities(clonedLoc, 0.5, 1, 0.5));
 
-        if (nearbyEntities.isEmpty()) {
+        boolean shouldPlaceCrystal;
+        if (this.crystalApi == null) shouldPlaceCrystal = nearbyEntities.isEmpty();
+        else shouldPlaceCrystal = this.crystalApi.canPlaceCrystal(nearbyEntities, true);
+        if (shouldPlaceCrystal) {
             loc.getWorld().spawn(clonedLoc.subtract(0.0, 1.0, 0.0), EnderCrystal.class, entity -> entity.setShowingBottom(false));
 
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
