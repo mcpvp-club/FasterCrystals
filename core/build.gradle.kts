@@ -13,10 +13,18 @@ java {
 repositories {
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
     maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+    maven {
+        url = uri(findProperty("repsyUrl")!!)
+        credentials {
+            username = findProperty("repsyUsername").toString()
+            password = findProperty("repsyPassword").toString()
+        }
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("xyz.reknown.duelsplugin:DuelsPluginAPI:1.0.5")
 
     // Shadow will include the runtimeClasspath by default, which implementation adds to.
     // Dependencies you don't want to include go in the compileOnly configuration.
