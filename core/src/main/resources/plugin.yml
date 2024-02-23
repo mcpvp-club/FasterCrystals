@@ -3,11 +3,7 @@ name: $name
 version: $version
 author: Jyguy
 api-version: "$apiVersion"
+depend:
+  - packetevents
 softdepend:
   - DuelsPlugin
-  - ProtocolLib
-  - ProtocolSupport
-  - ViaVersion
-  - ViaBackwards
-  - ViaRewind
-  - Geyser-Spigot

@@ -25,6 +25,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
     compileOnly("xyz.reknown.duelsplugin:DuelsPluginAPI:1.0.5")
+    compileOnly("com.github.retrooper.packetevents:spigot:2.2.1")
 
     // Shadow will include the runtimeClasspath by default, which implementation adds to.
     // Dependencies you don't want to include go in the compileOnly configuration.
@@ -40,9 +41,6 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.2.0") {
-        exclude("net.kyori") // already bundled in paper
-    }
     implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
@@ -80,8 +78,6 @@ tasks {
         archiveVersion.set("${rootProject.version}")
 
         minimize()
-        relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
-        relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
         relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
         from("../LICENSE")
     }
