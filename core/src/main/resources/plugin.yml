@@ -4,11 +4,7 @@ version: $version
 author: Jyguy
 api-version: "$apiVersion"
 folia-supported: true
+depend:
+  - packetevents
 softdepend:
   - DuelsPlugin
-  - ProtocolLib
-  - ProtocolSupport
-  - ViaVersion
-  - ViaBackwards
-  - ViaRewind
-  - Geyser-Spigot

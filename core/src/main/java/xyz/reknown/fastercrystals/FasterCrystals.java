@@ -20,7 +20,6 @@ package xyz.reknown.fastercrystals;
 import com.github.retrooper.packetevents.PacketEvents;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -67,11 +66,9 @@ public class FasterCrystals extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().getSettings()
                 .checkForUpdates(false)
                 .reEncodeByDefault(false);
-        PacketEvents.getAPI().load();
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
