@@ -31,14 +31,15 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         if (user == null || !user.isFastCrystals()) return;
 
         AnimPackets lastPacket = user.getLastPacket();
+        Location eyeLoc = player.getEyeLocation();
+        Vector direction = eyeLoc.getDirection();
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
             if (user.isIgnoreAnim()) return;; // animation is for inventory drop item
 
-            Location eyeLoc = player.getEyeLocation();
             RayTraceResult result = player.getWorld().rayTraceEntities(
                     eyeLoc,
-                    player.getLocation().getDirection(),
+                    direction,
                     3.0,
                     0.0,
                     entity -> {
@@ -64,7 +65,8 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             //     within the bounding box. This causes the distance check to false positive.
             // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
             if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
-                RayTraceResult bResult = player.rayTraceBlocks(player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+                RayTraceResult bResult = player.getWorld().rayTraceBlocks(eyeLoc, direction,
+                        player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
                 if (bResult != null) {
                     Block block = bResult.getHitBlock();
                     Vector eyeLocV = eyeLoc.toVector();
