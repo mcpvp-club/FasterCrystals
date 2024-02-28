@@ -5,12 +5,16 @@ import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.user.User;
 
@@ -39,13 +43,17 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         EnderCrystal entity = plugin.getCrystal(entityId);
         if (entity == null) return;
 
-        Location blockLoc = entity.getLocation().clone().subtract(0.5, 1.0, 0.5);
+        Location eyeLoc = player.getEyeLocation();
+        Vector direction = eyeLoc.getDirection();
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Location blockLoc = entity.getLocation().clone().subtract(0.5, 1.0, 0.5);
 
-        RayTraceResult result = player.rayTraceBlocks(player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5,
-                FluidCollisionMode.NEVER);
-        if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
-        if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
+            RayTraceResult result = player.getWorld().rayTraceBlocks(eyeLoc, direction,
+                    player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+            if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
+            if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
-        Bukkit.getScheduler().runTask(plugin, () -> plugin.spawnCrystal(entity.getLocation().clone(), player, item));
+            plugin.spawnCrystal(entity.getLocation().clone(), player, item);
+        });
     }
 }
