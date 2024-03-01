@@ -37,7 +37,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
             if (user.isIgnoreAnim()) return;; // animation is for inventory drop item
 
-            RayTraceResult result = player.getWorld().rayTraceEntities(
+            RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
                     direction,
                     3.0,
@@ -65,7 +65,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             //     within the bounding box. This causes the distance check to false positive.
             // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
             if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
-                RayTraceResult bResult = player.getWorld().rayTraceBlocks(eyeLoc, direction,
+                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
                         player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
                 if (bResult != null) {
                     Block block = bResult.getHitBlock();
