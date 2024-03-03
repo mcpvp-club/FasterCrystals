@@ -13,9 +13,9 @@ public class EntityRemoveFromWorldListener implements Listener {
     public void onEntityRemoveFromWorld(EntityRemoveFromWorldEvent event) {
         if (event.getEntityType() == EntityType.ENDER_CRYSTAL) {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                plugin.removeCrystal(event.getEntity().getEntityId());
-            }, 40L); // add delay so that it is detected as a crystal when interact happens after destruction
+            Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.removeCrystal(
+                event.getEntity().getEntityId()
+            ), 40L); // add delay so that it is detected as a crystal when interact happens after destruction
         }
     }
 }

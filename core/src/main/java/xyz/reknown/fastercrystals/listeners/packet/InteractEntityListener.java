@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -47,10 +48,17 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         Vector direction = eyeLoc.getDirection();
         Bukkit.getScheduler().runTask(plugin, () -> {
             Location blockLoc = entity.getLocation().clone().subtract(0.5, 1.0, 0.5);
+            RayTraceResult result = player.getWorld().rayTraceBlocks(
+                eyeLoc,
+                direction,
+                player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5
+            );
+            if (result == null) return;
 
-            RayTraceResult result = player.getWorld().rayTraceBlocks(eyeLoc, direction,
-                    player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
-            if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
+            final Block hitBlock = result.getHitBlock();
+            if (hitBlock == null) return;
+
+            if (hitBlock.getType() != Material.OBSIDIAN) return;
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
             plugin.spawnCrystal(entity.getLocation().clone(), player, item);

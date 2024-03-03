@@ -35,7 +35,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         Vector direction = eyeLoc.getDirection();
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
-            if (user.isIgnoreAnim()) return;; // animation is for inventory drop item
+            if (user.isIgnoreAnim()) return; // animation is for inventory drop item
 
             RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
