@@ -118,17 +118,12 @@ public class FasterCrystals extends JavaPlugin {
     }
 
     @NotNull
-    public static FileConfiguration config() {
-        return config(JavaPlugin.getPlugin(FasterCrystals.class));
-    }
-
-    @NotNull
-    public static FileConfiguration config(final @NotNull JavaPlugin plugin) {
+    public FileConfiguration config() {
         try {
             return CompletableFuture.supplyAsync(() -> {
-                plugin.saveDefaultConfig();
-                plugin.reloadConfig();
-                return plugin.getConfig();
+                saveDefaultConfig();
+                reloadConfig();
+                return getConfig();
             }).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
