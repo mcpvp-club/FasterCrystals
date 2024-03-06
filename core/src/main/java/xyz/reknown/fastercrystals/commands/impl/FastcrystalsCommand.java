@@ -49,7 +49,7 @@ public class FastcrystalsCommand extends AbstractCommand {
                     )
                 , Placeholder.parsed(
                     "state",
-                    FasterCrystals.config()
+                    plugin.config()
                         .getString(
                             stateKey, ""
                         )
