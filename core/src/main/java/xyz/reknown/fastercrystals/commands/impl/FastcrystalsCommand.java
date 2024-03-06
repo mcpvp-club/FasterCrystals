@@ -42,7 +42,7 @@ public class FastcrystalsCommand extends AbstractCommand {
         player.sendMessage(MiniMessage
             .miniMessage()
             .deserialize(
-                FasterCrystals.config()
+                plugin.config()
                     .getString(
                         "text",
                         ""
