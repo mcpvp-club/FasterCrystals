@@ -3,8 +3,8 @@ package xyz.reknown.fastercrystals.commands.impl;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -34,11 +34,27 @@ public class FastcrystalsCommand extends AbstractCommand {
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
 
         boolean toggle = (boolean) args.getOptional(0)
-                    .orElse(pdc.has(key, PersistentDataType.BYTE) && pdc.get(key, PersistentDataType.BYTE) == 0);
+                    .orElseGet(() -> pdc.has(key, PersistentDataType.BYTE) && pdc.get(key, PersistentDataType.BYTE) == 0);
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
 
-        player.sendMessage(Component.text("Turned ", NamedTextColor.GOLD)
-                .append(Component.text(toggle ? "on" : "off", NamedTextColor.YELLOW))
-                .append(Component.text(" your FastCrystals setting.", NamedTextColor.GOLD)));
+        String stateKey = "state." + (toggle ? "on" : "off");
+
+        player.sendMessage(MiniMessage
+            .miniMessage()
+            .deserialize(
+                plugin.config()
+                    .getString(
+                        "text",
+                        ""
+                    )
+                , Placeholder.parsed(
+                    "state",
+                    plugin.config()
+                        .getString(
+                            stateKey, ""
+                        )
+                )
+            )
+        );
     }
 }

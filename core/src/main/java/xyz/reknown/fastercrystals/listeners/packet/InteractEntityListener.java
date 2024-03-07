@@ -51,6 +51,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
             RayTraceResult result = player.getWorld().rayTraceBlocks(eyeLoc, direction,
                     player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
             if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
+
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
             plugin.spawnCrystal(entity.getLocation().clone(), player, item);
