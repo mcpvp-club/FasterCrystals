@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    implementation("net.kyori:adventure-text-minimessage:4.16.0")
 
     // Shadow will include the runtimeClasspath by default, which implementation adds to.
     // Dependencies you don't want to include go in the compileOnly configuration.
