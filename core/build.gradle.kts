@@ -17,7 +17,6 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
-    implementation("net.kyori:adventure-text-minimessage:4.16.0")
 
     // Shadow will include the runtimeClasspath by default, which implementation adds to.
     // Dependencies you don't want to include go in the compileOnly configuration.
@@ -36,7 +35,9 @@ dependencies {
     implementation("com.github.retrooper.packetevents:spigot:2.2.0") {
         exclude("net.kyori") // already bundled in paper
     }
+
     implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
+    implementation("net.kyori:adventure-text-minimessage:4.16.0")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
