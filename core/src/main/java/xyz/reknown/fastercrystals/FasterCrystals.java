@@ -9,11 +9,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import xyz.reknown.fastercrystals.api.ICrystalDamager;
 import xyz.reknown.fastercrystals.api.IPickableChecker;
 import xyz.reknown.fastercrystals.commands.impl.FastcrystalsCommand;
@@ -32,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class FasterCrystals extends JavaPlugin {
     @Getter private ICrystalDamager damager;
@@ -114,6 +118,19 @@ public class FasterCrystals extends JavaPlugin {
         PacketEvents.getAPI().getEventManager().registerListener(new InteractEntityListener());
         PacketEvents.getAPI().getEventManager().registerListener(new LastPacketListener());
         PacketEvents.getAPI().init();
+    }
+
+    @NotNull
+    public FileConfiguration config() {
+        try {
+            return CompletableFuture.supplyAsync(() -> {
+                saveDefaultConfig();
+                reloadConfig();
+                return getConfig();
+            }).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
