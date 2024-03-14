@@ -56,7 +56,10 @@ public class FasterCrystals extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        config();
+        saveDefaultConfig();
+        reloadConfig();
+        getConfig().options()
+            .pathSeparator('.');
 
         switch (Bukkit.getMinecraftVersion()) {
             case "1.20.4": case "1.20.3":

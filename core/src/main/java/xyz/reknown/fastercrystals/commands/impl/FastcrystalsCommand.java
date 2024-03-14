@@ -13,6 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.commands.AbstractCommand;
 
+import java.util.Objects;
+
 public class FastcrystalsCommand extends AbstractCommand {
     public FastcrystalsCommand() {
         super("fastcrystals");
@@ -37,22 +39,27 @@ public class FastcrystalsCommand extends AbstractCommand {
                     .orElseGet(() -> pdc.has(key, PersistentDataType.BYTE) && pdc.get(key, PersistentDataType.BYTE) == 0);
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
 
-        String stateKey = "state." + (toggle ? "on" : "off");
+        String stateKey = "state_" + (toggle ? "on" : "off");
+
+        plugin.saveDefaultConfig();
+        plugin.reloadConfig();
+
+        final String state = Objects.requireNonNullElse(
+            plugin.getConfig().getString(stateKey),
+            stateKey
+        );
+
+        final String text = Objects.requireNonNullElse(
+            plugin.getConfig().getString("text"),
+            "<gold>Turned</gold> <state> <gold>your FastCrystals setting.</gold>"
+        );
 
         player.sendMessage(MiniMessage
             .miniMessage()
             .deserialize(
-                plugin.config()
-                    .getString(
-                        "text",
-                        ""
-                    )
-                , Placeholder.parsed(
+                text, Placeholder.parsed(
                     "state",
-                    plugin.config()
-                        .getString(
-                            stateKey, ""
-                        )
+                    state
                 )
             )
         );
