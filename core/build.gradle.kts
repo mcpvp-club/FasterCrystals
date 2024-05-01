@@ -37,8 +37,8 @@ dependencies {
     }
     implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
 
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
+    compileOnly("org.projectlombok:lombok:1.18.32")
+    annotationProcessor("org.projectlombok:lombok:1.18.32")
 }
 
 tasks {
