@@ -36,6 +36,7 @@ dependencies {
         exclude("net.kyori") // already bundled in paper
     }
     implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
+    implementation("net.kyori:adventure-text-minimessage:4.16.0")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
