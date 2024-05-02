@@ -38,23 +38,10 @@ public class FastcrystalsCommand extends AbstractCommand {
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
 
         String stateKey = "state." + (toggle ? "on" : "off");
+        String state = plugin.getConfig().getString(stateKey);
+        String text = plugin.getConfig().getString("text");
 
-        player.sendMessage(MiniMessage
-            .miniMessage()
-            .deserialize(
-                plugin.config()
-                    .getString(
-                        "text",
-                        ""
-                    )
-                , Placeholder.parsed(
-                    "state",
-                    plugin.config()
-                        .getString(
-                            stateKey, ""
-                        )
-                )
-            )
-        );
+        MiniMessage mm = MiniMessage.miniMessage();
+        player.sendMessage(mm.deserialize(text, Placeholder.parsed("state", state)));
     }
 }
