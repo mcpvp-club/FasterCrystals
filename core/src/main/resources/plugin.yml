@@ -3,6 +3,7 @@ name: $name
 version: $version
 author: Jyguy
 api-version: "$apiVersion"
+folia-supported: true
 softdepend:
   - ProtocolLib
   - ProtocolSupport
