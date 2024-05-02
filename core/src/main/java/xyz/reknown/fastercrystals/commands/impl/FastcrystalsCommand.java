@@ -37,7 +37,7 @@ public class FastcrystalsCommand extends AbstractCommand {
                     .orElseGet(() -> pdc.has(key, PersistentDataType.BYTE) && pdc.get(key, PersistentDataType.BYTE) == 0);
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
 
-        String stateKey = "state_" + (toggle ? "on" : "off");
+        String stateKey = "state." + (toggle ? "on" : "off");
         String state = plugin.getConfig().getString(stateKey);
         String text = plugin.getConfig().getString("text");
 

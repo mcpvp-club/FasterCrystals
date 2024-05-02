@@ -1,5 +1,6 @@
 # Whenever you see the <state> placeholder, it will be one of these.
-state_on: '<yellow>on</yellow>'
-state_off: '<yellow>off</yellow>'
+state:
+  'on': '<yellow>on</yellow>'
+  'off': '<yellow>off</yellow>'
 
 text: '<gold>Turned</gold> <state> <gold>your FastCrystals setting.</gold>'
