@@ -5,7 +5,7 @@ import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
-import org.bukkit.Bukkit;
+import io.github.retrooper.packetevents.util.FoliaCompatUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,7 +45,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
 
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        FoliaCompatUtil.runTaskForEntity(entity, plugin, () -> {
             Location blockLoc = entity.getLocation().clone().subtract(0.5, 1.0, 0.5);
 
             RayTraceResult result = player.getWorld().rayTraceBlocks(eyeLoc, direction,
@@ -55,6 +55,6 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
             plugin.spawnCrystal(entity.getLocation().clone(), player, item);
-        });
+        }, null, 0L);
     }
 }
