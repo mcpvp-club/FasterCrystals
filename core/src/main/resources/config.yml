@@ -3,4 +3,4 @@ state:
   'on': '<yellow>on</yellow>'
   'off': '<yellow>off</yellow>'
 
-text: '<gold>Turned</gold> <state> <gold>your FastCrystals setting.</gold>'
+text: '<gold>Turned</gold> <state> <gold>your FasterCrystals setting.</gold>'

@@ -15,16 +15,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.commands.AbstractCommand;
 
-public class FastcrystalsCommand extends AbstractCommand {
-    public FastcrystalsCommand() {
-        super("fastcrystals");
+public class FastercrystalsCommand extends AbstractCommand {
+    public FastercrystalsCommand() {
+        super("fastercrystals");
     }
 
     @Override
     public void register() {
         new CommandAPICommand(name)
+                .withAliases("fastcrystals")
                 .withOptionalArguments(new BooleanArgument("toggle"))
-                .withPermission("fastercrystals.fastcrystals")
+                .withPermission("fastercrystals.toggle")
                 .executesPlayer(this::run)
                 .register();
     }
