@@ -32,10 +32,10 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.2.0") {
+    implementation("com.github.retrooper.packetevents:spigot:2.2.1") {
         exclude("net.kyori") // already bundled in paper
     }
-    implementation("dev.jorel:commandapi-bukkit-shade:9.3.0")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.4.0")
     implementation("net.kyori:adventure-text-minimessage:4.16.0")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
