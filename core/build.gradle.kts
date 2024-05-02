@@ -32,10 +32,9 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.2.1") {
-        exclude("net.kyori") // already bundled in paper
-    }
+    implementation("com.github.retrooper.packetevents:spigot:2.2.1")
     implementation("dev.jorel:commandapi-bukkit-shade:9.4.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation("net.kyori:adventure-text-minimessage:4.16.0")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
@@ -76,6 +75,8 @@ tasks {
         relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
         relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
         relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
+        relocate("net.kyori", "xyz.reknown.fastercrystals.kyori")
+
         from("../LICENSE")
     }
 }

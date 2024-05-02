@@ -3,8 +3,10 @@ package xyz.reknown.fastercrystals.commands.impl;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -42,6 +44,8 @@ public class FastcrystalsCommand extends AbstractCommand {
         String text = plugin.getConfig().getString("text");
 
         MiniMessage mm = MiniMessage.miniMessage();
-        player.sendMessage(mm.deserialize(text, Placeholder.parsed("state", state)));
+        Component component = mm.deserialize(text, Placeholder.parsed("state", state));
+        // relocating net.kyori.*, can't use sendMessage(Component)
+        player.sendMessage(BungeeComponentSerializer.get().serialize(component));
     }
 }
