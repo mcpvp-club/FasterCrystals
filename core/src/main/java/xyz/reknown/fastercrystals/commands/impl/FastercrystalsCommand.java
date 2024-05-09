@@ -3,8 +3,10 @@ package xyz.reknown.fastercrystals.commands.impl;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -13,16 +15,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.commands.AbstractCommand;
 
-public class FastcrystalsCommand extends AbstractCommand {
-    public FastcrystalsCommand() {
-        super("fastcrystals");
+public class FastercrystalsCommand extends AbstractCommand {
+    public FastercrystalsCommand() {
+        super("fastercrystals");
     }
 
     @Override
     public void register() {
         new CommandAPICommand(name)
+                .withAliases("fastcrystals")
                 .withOptionalArguments(new BooleanArgument("toggle"))
-                .withPermission("fastercrystals.fastcrystals")
+                .withPermission("fastercrystals.toggle")
                 .executesPlayer(this::run)
                 .register();
     }
@@ -38,23 +41,12 @@ public class FastcrystalsCommand extends AbstractCommand {
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
 
         String stateKey = "state." + (toggle ? "on" : "off");
+        String state = plugin.getConfig().getString(stateKey);
+        String text = plugin.getConfig().getString("text");
 
-        player.sendMessage(MiniMessage
-            .miniMessage()
-            .deserialize(
-                plugin.config()
-                    .getString(
-                        "text",
-                        ""
-                    )
-                , Placeholder.parsed(
-                    "state",
-                    plugin.config()
-                        .getString(
-                            stateKey, ""
-                        )
-                )
-            )
-        );
+        MiniMessage mm = MiniMessage.miniMessage();
+        Component component = mm.deserialize(text, Placeholder.parsed("state", state));
+        // relocating net.kyori.*, can't use sendMessage(Component)
+        player.sendMessage(BungeeComponentSerializer.get().serialize(component));
     }
 }
