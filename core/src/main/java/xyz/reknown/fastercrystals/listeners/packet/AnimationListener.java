@@ -3,7 +3,7 @@ package xyz.reknown.fastercrystals.listeners.packet;
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
-import io.github.retrooper.packetevents.util.FoliaCompatUtil;
+import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -33,7 +33,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         AnimPackets lastPacket = user.getLastPacket();
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
-        FoliaCompatUtil.runTaskForEntity(player, plugin, () -> {
+        FoliaScheduler.getEntityScheduler().run(player, plugin, task -> {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
             if (user.isIgnoreAnim()) return; // animation is for inventory drop item
 
@@ -86,6 +86,6 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             }
 
             plugin.getDamager().damage(entity, player);
-        }, null, 0L);
+        }, null);
     }
 }

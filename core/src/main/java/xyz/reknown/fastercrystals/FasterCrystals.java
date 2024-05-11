@@ -4,7 +4,7 @@ import com.github.retrooper.packetevents.PacketEvents;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
-import io.github.retrooper.packetevents.util.FoliaCompatUtil;
+import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -101,7 +101,7 @@ public class FasterCrystals extends JavaPlugin {
                 throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.20.6");
         }
 
-        this.crystalIds = FoliaCompatUtil.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
+        this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
 
         this.users = new Users();
 
