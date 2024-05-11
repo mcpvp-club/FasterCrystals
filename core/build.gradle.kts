@@ -2,12 +2,12 @@ plugins {
     `java-library`
 
     // Shades and relocates dependencies into our plugin jar. See https://imperceptiblethoughts.com/shadow/introduction/
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
 }
 
 java {
-    // Configure the java toolchain. This allows gradle to auto-provision JDK 17 on systems that only have JDK 8 installed for example.
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 8 installed for example.
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 repositories {
@@ -22,6 +22,7 @@ dependencies {
     // Dependencies you don't want to include go in the compileOnly configuration.
     // Make sure to relocate shaded dependencies!
     implementation(project(":api"))
+    implementation(project(":v1_20_5", "reobf"))
     implementation(project(":v1_20_3", "reobf"))
     implementation(project(":v1_20_2", "reobf"))
     implementation(project(":v1_20", "reobf"))
@@ -32,10 +33,10 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.2.1")
-    implementation("dev.jorel:commandapi-bukkit-shade:9.4.0")
+    implementation("com.github.retrooper.packetevents:spigot:2.3.0")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.4.1")
     implementation("net.kyori:adventure-platform-bukkit:4.3.2")
-    implementation("net.kyori:adventure-text-minimessage:4.16.0")
+    implementation("net.kyori:adventure-text-minimessage:4.17.0")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
