@@ -34,7 +34,7 @@ dependencies {
     implementation(project(":v1_17", "reobf"))
 
     implementation("com.github.retrooper.packetevents:spigot:2.3.0")
-    implementation("dev.jorel:commandapi-bukkit-shade:9.4.0")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.4.1")
     implementation("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
 
