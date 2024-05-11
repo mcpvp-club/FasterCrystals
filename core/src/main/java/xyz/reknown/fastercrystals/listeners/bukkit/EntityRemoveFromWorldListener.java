@@ -1,7 +1,7 @@
 package xyz.reknown.fastercrystals.listeners.bukkit;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import org.bukkit.Bukkit;
+import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,9 +13,9 @@ public class EntityRemoveFromWorldListener implements Listener {
     public void onEntityRemoveFromWorld(EntityRemoveFromWorldEvent event) {
         if (event.getEntityType() == EntityType.ENDER_CRYSTAL) {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.removeCrystal(
-                event.getEntity().getEntityId()
-            ), 40L); // add delay so that it is detected as a crystal when interact happens after destruction
+            // add delay so that it is detected as a crystal when interact happens after destruction
+            FoliaScheduler.getGlobalRegionScheduler().runDelayed(plugin,
+                    task -> plugin.removeCrystal(event.getEntity().getEntityId()), 40L);
         }
     }
 }
