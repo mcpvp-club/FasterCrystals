@@ -48,7 +48,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         FoliaScheduler.getEntityScheduler().run(entity, plugin, task -> {
             Location blockLoc = entity.getLocation().clone().subtract(0.5, 1.0, 0.5);
 
-            RayTraceResult result = player.getWorld().rayTraceBlocks(eyeLoc, direction,
+            RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
                     player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
             if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
 
