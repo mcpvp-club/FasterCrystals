@@ -41,6 +41,6 @@ public class User {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
-        return !pdc.has(key, PersistentDataType.BYTE) || pdc.get(key, PersistentDataType.BYTE) == 1;
+        return pdc.getOrDefault(key, PersistentDataType.BYTE, (byte) 1) == 1;
     }
 }

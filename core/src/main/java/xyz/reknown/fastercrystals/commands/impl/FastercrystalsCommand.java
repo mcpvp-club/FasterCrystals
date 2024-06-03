@@ -58,7 +58,7 @@ public class FastercrystalsCommand extends AbstractCommand {
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
 
         boolean toggle = (boolean) args.getOptional(0)
-                    .orElseGet(() -> pdc.has(key, PersistentDataType.BYTE) && pdc.get(key, PersistentDataType.BYTE) == 0);
+                    .orElseGet(() -> pdc.getOrDefault(key, PersistentDataType.BYTE, (byte) 1) == 0);
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
 
         String stateKey = "state." + (toggle ? "on" : "off");
