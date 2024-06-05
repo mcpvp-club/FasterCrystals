@@ -57,7 +57,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
                     direction,
-                    3.0,
+                    player.getGameMode() == GameMode.CREATIVE ? 5.0 : 3.0,
                     0.0,
                     entity -> {
                         if (!plugin.getPickableChecker().isPickable(entity)) return false;
