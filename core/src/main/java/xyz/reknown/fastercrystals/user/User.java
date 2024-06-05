@@ -37,7 +37,7 @@ public class User {
         this.player = player;
     }
 
-    public boolean isFastCrystals() {
+    public boolean isFasterCrystals() {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");

@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.ICrystalDamager;
 import xyz.reknown.fastercrystals.api.IPickableChecker;
+import xyz.reknown.fastercrystals.api.IRange;
 import xyz.reknown.fastercrystals.commands.impl.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.damager.*;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener;
@@ -44,6 +45,8 @@ import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
 import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
 import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
 import xyz.reknown.fastercrystals.pickable.*;
+import xyz.reknown.fastercrystals.range.Range_1_17_R1;
+import xyz.reknown.fastercrystals.range.Range_1_20_R4;
 import xyz.reknown.fastercrystals.user.Users;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FasterCrystals extends JavaPlugin {
     @Getter private ICrystalDamager damager;
     @Getter private IPickableChecker pickableChecker;
+    @Getter private IRange range;
     @Getter private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
 
@@ -72,11 +76,13 @@ public class FasterCrystals extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        range = new Range_1_17_R1();
 
         switch (Bukkit.getMinecraftVersion()) {
             case "1.20.5": case "1.20.6":
                 damager = new CrystalDamager_1_20_R4();
                 pickableChecker = new PickableChecker_1_20_R4();
+                range = new Range_1_20_R4();
                 break;
             case "1.20.4": case "1.20.3":
                 damager = new CrystalDamager_1_20_R3();

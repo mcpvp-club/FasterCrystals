@@ -45,7 +45,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         User user = plugin.getUsers().get(player);
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) return; // ignore weakness hits, tool hits are slow anyway
-        if (user == null || !user.isFastCrystals()) return;
+        if (user == null || !user.isFasterCrystals()) return;
 
         AnimPackets lastPacket = user.getLastPacket();
         Location eyeLoc = player.getEyeLocation();
@@ -57,7 +57,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
                     direction,
-                    player.getGameMode() == GameMode.CREATIVE ? 5.0 : 3.0,
+                    plugin.getRange().entity(player),
                     0.0,
                     entity -> {
                         if (!plugin.getPickableChecker().isPickable(entity)) return false;

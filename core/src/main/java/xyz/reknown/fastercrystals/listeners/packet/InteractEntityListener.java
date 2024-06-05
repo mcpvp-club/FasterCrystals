@@ -48,7 +48,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         if (player.getGameMode() == GameMode.SPECTATOR) return;
 
         User user = plugin.getUsers().get(player);
-        if (user == null || !user.isFastCrystals()) return;
+        if (user == null || !user.isFasterCrystals()) return;
 
         ItemStack item;
         if (wrapper.getHand() == InteractionHand.MAIN_HAND) item = player.getInventory().getItemInMainHand();
@@ -65,8 +65,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         FoliaScheduler.getEntityScheduler().run(entity, plugin, task -> {
             Location blockLoc = entity.getLocation().clone().subtract(0.5, 1.0, 0.5);
 
-            RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
-                    player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+            RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, plugin.getRange().block(player));
             if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
 
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
