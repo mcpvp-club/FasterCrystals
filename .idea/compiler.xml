@@ -10,7 +10,6 @@
         <module name="FasterCrystals.core.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="17" />
     <bytecodeTargetLevel target="17">
       <module name="FasterCrystals.nms.v1_20_5" target="21" />
       <module name="FasterCrystals.nms.v1_20_5.main" target="21" />
