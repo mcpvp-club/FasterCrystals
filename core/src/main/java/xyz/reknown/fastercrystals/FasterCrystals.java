@@ -79,7 +79,12 @@ public class FasterCrystals extends JavaPlugin {
         range = new Range_1_17_R1();
 
         switch (Bukkit.getMinecraftVersion()) {
-            case "1.20.5": case "1.20.6": case "1.21":
+            case "1.21":
+                damager = new CrystalDamager_1_21_R1();
+                pickableChecker = new PickableChecker_1_21_R1();
+                range = new Range_1_20_R4();
+                break;
+            case "1.20.5": case "1.20.6":
                 damager = new CrystalDamager_1_20_R4();
                 pickableChecker = new PickableChecker_1_20_R4();
                 range = new Range_1_20_R4();

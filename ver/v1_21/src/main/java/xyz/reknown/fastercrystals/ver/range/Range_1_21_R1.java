@@ -12,25 +12,23 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.5.0")
+package xyz.reknown.fastercrystals.ver.range;
+
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
+import xyz.reknown.fastercrystals.api.IRange;
+
+public class Range_1_21_R1 implements IRange {
+    @Override
+    public double block(Player player) {
+        return player.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE).getValue();
+    }
+
+    @Override
+    public double entity(Player player) {
+        return player.getAttribute(Attribute.PLAYER_ENTITY_INTERACTION_RANGE).getValue();
+    }
 }
-
-rootProject.name = "FasterCrystals"
-
-include("api")
-include("core")
-include("ver:v1_17")
-include("ver:v1_18")
-include("ver:v1_18_2")
-include("ver:v1_19")
-include("ver:v1_19_3")
-include("ver:v1_19_4")
-include("ver:v1_20")
-include("ver:v1_20_2")
-include("ver:v1_20_3")
-include("ver:v1_20_5")
-include("ver:v1_21")

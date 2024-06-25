@@ -39,6 +39,7 @@ dependencies {
     // Dependencies you don't want to include go in the compileOnly configuration.
     // Make sure to relocate shaded dependencies!
     implementation(project(":api"))
+    implementation(project(":ver:v1_21", "reobf"))
     implementation(project(":ver:v1_20_5", "reobf"))
     implementation(project(":ver:v1_20_3", "reobf"))
     implementation(project(":ver:v1_20_2", "reobf"))
