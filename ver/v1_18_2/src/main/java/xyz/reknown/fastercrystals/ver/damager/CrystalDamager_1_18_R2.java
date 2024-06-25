@@ -15,11 +15,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>. 
  */
 
-plugins {
-    `java-library`
-    id("io.papermc.paperweight.userdev") version "1.7.1" apply false
-}
+package xyz.reknown.fastercrystals.ver.damager;
 
-group = "xyz.reknown.fastercrystals"
-version = "1.6.0"
-description = "Uses packets to manually break/place crystals"
+import net.minecraft.world.damagesource.DamageSource;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEnderCrystal;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import xyz.reknown.fastercrystals.api.ICrystalDamager;
+
+public class CrystalDamager_1_18_R2 implements ICrystalDamager {
+    @Override
+    public void damage(Entity entity, Player player) {
+        ((CraftEnderCrystal) entity).getHandle().hurt(
+                DamageSource.playerAttack(((CraftPlayer) player).getHandle()),
+                1
+        );
+    }
+}

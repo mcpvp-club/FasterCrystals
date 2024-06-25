@@ -36,7 +36,6 @@ import xyz.reknown.fastercrystals.api.ICrystalDamager;
 import xyz.reknown.fastercrystals.api.IPickableChecker;
 import xyz.reknown.fastercrystals.api.IRange;
 import xyz.reknown.fastercrystals.commands.impl.FastercrystalsCommand;
-import xyz.reknown.fastercrystals.damager.*;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntitySpawnListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.PlayerJoinListener;
@@ -44,10 +43,11 @@ import xyz.reknown.fastercrystals.listeners.bukkit.PlayerQuitListener;
 import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
 import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
 import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
-import xyz.reknown.fastercrystals.pickable.*;
-import xyz.reknown.fastercrystals.range.Range_1_17_R1;
-import xyz.reknown.fastercrystals.range.Range_1_20_R4;
 import xyz.reknown.fastercrystals.user.Users;
+import xyz.reknown.fastercrystals.ver.damager.*;
+import xyz.reknown.fastercrystals.ver.pickable.*;
+import xyz.reknown.fastercrystals.ver.range.Range_1_17_R1;
+import xyz.reknown.fastercrystals.ver.range.Range_1_20_R4;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +79,11 @@ public class FasterCrystals extends JavaPlugin {
         range = new Range_1_17_R1();
 
         switch (Bukkit.getMinecraftVersion()) {
+            case "1.21":
+                damager = new CrystalDamager_1_21_R1();
+                pickableChecker = new PickableChecker_1_21_R1();
+                range = new Range_1_20_R4();
+                break;
             case "1.20.5": case "1.20.6":
                 damager = new CrystalDamager_1_20_R4();
                 pickableChecker = new PickableChecker_1_20_R4();
@@ -121,7 +126,7 @@ public class FasterCrystals extends JavaPlugin {
                 pickableChecker = new PickableChecker_1_17_R1();
                 break;
             default:
-                throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.20.6");
+                throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.21");
         }
 
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();

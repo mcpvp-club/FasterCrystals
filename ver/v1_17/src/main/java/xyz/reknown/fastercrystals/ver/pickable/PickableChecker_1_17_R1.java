@@ -15,11 +15,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>. 
  */
 
-plugins {
-    `java-library`
-    id("io.papermc.paperweight.userdev") version "1.7.1" apply false
-}
+package xyz.reknown.fastercrystals.ver.pickable;
 
-group = "xyz.reknown.fastercrystals"
-version = "1.6.0"
-description = "Uses packets to manually break/place crystals"
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.entity.Entity;
+import xyz.reknown.fastercrystals.api.IPickableChecker;
+
+public class PickableChecker_1_17_R1 implements IPickableChecker {
+    @Override
+    public boolean isPickable(Entity entity) {
+        return ((CraftEntity) entity).getHandle().isPickable();
+    }
+}
