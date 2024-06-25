@@ -28,8 +28,8 @@ java {
 }
 
 repositories {
-    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
-    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
 }
 
 dependencies {
@@ -50,8 +50,8 @@ dependencies {
     implementation(project(":v1_18", "reobf"))
     implementation(project(":v1_17", "reobf"))
 
-    implementation("com.github.retrooper.packetevents:spigot:2.3.0")
-    implementation("dev.jorel:commandapi-bukkit-shade:9.5.0")
+    implementation("com.github.retrooper:packetevents-spigot:2.3.1-SNAPSHOT")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.5.1")
     implementation("net.kyori:adventure-platform-bukkit:4.3.3")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
 
@@ -61,8 +61,6 @@ dependencies {
 
 tasks {
     compileJava {
-        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-
         // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
         // See https://openjdk.java.net/jeps/247 for more information.
         options.release.set(17)
