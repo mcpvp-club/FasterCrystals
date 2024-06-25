@@ -15,31 +15,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>. 
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.5.0")
+package xyz.reknown.fastercrystals.ver.damager;
+
+import net.minecraft.world.damagesource.DamageSource;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEnderCrystal;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import xyz.reknown.fastercrystals.api.ICrystalDamager;
+
+public class CrystalDamager_1_17_R1 implements ICrystalDamager {
+    @Override
+    public void damage(Entity entity, Player player) {
+        ((CraftEnderCrystal) entity).getHandle().hurt(
+                DamageSource.playerAttack(((CraftPlayer) player).getHandle()),
+                1
+        );
+    }
 }
-
-rootProject.name = "FasterCrystals"
-
-include("api")
-include("core")
-include("v1_20_5")
-include("v1_20_3")
-include("v1_20_2")
-include("v1_20")
-include("v1_19_4")
-include("v1_19_3")
-include("v1_19")
-include("v1_18_2")
-include("v1_18")
-include("v1_17")
-include("ver:v1_17")
-include("ver:v1_18")
-include("ver:v1_18_2")
-include("ver:v1_19")
-include("ver:v1_19_3")
-include("ver:v1_19_4")
-include("ver:v1_20")
-include("ver:v1_20_2")
-include("ver:v1_20_3")
-include("ver:v1_20_5")

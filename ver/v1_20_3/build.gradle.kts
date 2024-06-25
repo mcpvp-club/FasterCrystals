@@ -16,30 +16,28 @@
  */
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.5.0")
+    `java-library`
+    id("io.papermc.paperweight.userdev")
 }
 
-rootProject.name = "FasterCrystals"
+dependencies {
+    paperweight.paperDevBundle("1.20.3-R0.1-SNAPSHOT")
 
-include("api")
-include("core")
-include("v1_20_5")
-include("v1_20_3")
-include("v1_20_2")
-include("v1_20")
-include("v1_19_4")
-include("v1_19_3")
-include("v1_19")
-include("v1_18_2")
-include("v1_18")
-include("v1_17")
-include("ver:v1_17")
-include("ver:v1_18")
-include("ver:v1_18_2")
-include("ver:v1_19")
-include("ver:v1_19_3")
-include("ver:v1_19_4")
-include("ver:v1_20")
-include("ver:v1_20_2")
-include("ver:v1_20_3")
-include("ver:v1_20_5")
+    compileOnly(project(":api"))
+}
+
+tasks {
+    // Configure reobfJar to run when invoking the build task
+    assemble {
+        dependsOn(reobfJar)
+    }
+
+    compileJava {
+        // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
+        // See https://openjdk.java.net/jeps/247 for more information.
+        options.release.set(17)
+    }
+    javadoc {
+        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+    }
+}

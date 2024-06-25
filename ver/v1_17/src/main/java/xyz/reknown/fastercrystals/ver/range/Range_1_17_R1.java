@@ -12,14 +12,23 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    `java-library`
-    id("io.papermc.paperweight.userdev") version "1.7.1" apply false
-}
+package xyz.reknown.fastercrystals.ver.range;
 
-group = "xyz.reknown.fastercrystals"
-version = "1.6.0"
-description = "Uses packets to manually break/place crystals"
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import xyz.reknown.fastercrystals.api.IRange;
+
+public class Range_1_17_R1 implements IRange {
+    @Override
+    public double block(Player player) {
+        return player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5;
+    }
+
+    @Override
+    public double entity(Player player) {
+        return player.getGameMode() == GameMode.CREATIVE ? 5.0 : 3.0;
+    }
+}

@@ -11,5 +11,13 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel target="17">
+      <module name="FasterCrystals.nms.v1_20_5" target="21" />
+      <module name="FasterCrystals.nms.v1_20_5.main" target="21" />
+      <module name="FasterCrystals.nms.v1_20_5.test" target="21" />
+      <module name="FasterCrystals.v1_20_5" target="21" />
+      <module name="FasterCrystals.v1_20_5.main" target="21" />
+      <module name="FasterCrystals.v1_20_5.test" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
