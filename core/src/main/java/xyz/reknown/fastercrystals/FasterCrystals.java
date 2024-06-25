@@ -35,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.ICrystalDamager;
 import xyz.reknown.fastercrystals.api.IPickableChecker;
 import xyz.reknown.fastercrystals.api.IRange;
+import xyz.reknown.fastercrystals.bstats.Metrics;
 import xyz.reknown.fastercrystals.commands.impl.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener;
 import xyz.reknown.fastercrystals.listeners.bukkit.EntitySpawnListener;
@@ -145,6 +146,9 @@ public class FasterCrystals extends JavaPlugin {
         PacketEvents.getAPI().getEventManager().registerListener(new InteractEntityListener());
         PacketEvents.getAPI().getEventManager().registerListener(new LastPacketListener());
         PacketEvents.getAPI().init();
+
+        int pluginId = 22397;
+        new Metrics(this, pluginId);
     }
 
     @Override
