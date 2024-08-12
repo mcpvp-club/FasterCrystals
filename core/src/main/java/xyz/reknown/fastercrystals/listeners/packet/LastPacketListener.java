@@ -40,7 +40,7 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
     @Override
     public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-        Player player = (Player) event.getPlayer();
+        Player player = event.getPlayer();
         if (player == null) return;
 
         User user = plugin.getUsers().get(player);

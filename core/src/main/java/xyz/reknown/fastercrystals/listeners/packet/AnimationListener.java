@@ -41,7 +41,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
 
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-        Player player = (Player) event.getPlayer();
+        Player player = event.getPlayer();
         User user = plugin.getUsers().get(player);
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) return; // ignore weakness hits, tool hits are slow anyway
