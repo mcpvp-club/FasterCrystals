@@ -29,7 +29,8 @@ java {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.codemc.io/repository/maven-releases/")
+    maven("https://repo.codemc.org/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
 }
 
 dependencies {
@@ -51,8 +52,8 @@ dependencies {
     implementation(project(":ver:v1_18", "reobf"))
     implementation(project(":ver:v1_17", "reobf"))
 
-    implementation("com.github.retrooper:packetevents-spigot:2.4.0")
-    implementation("dev.jorel:commandapi-bukkit-shade:9.5.1")
+    implementation("com.github.retrooper:packetevents-spigot:2.5.0-SNAPSHOT")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.5.3")
     implementation("net.kyori:adventure-platform-bukkit:4.3.3")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
 
