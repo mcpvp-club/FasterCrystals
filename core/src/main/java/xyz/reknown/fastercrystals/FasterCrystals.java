@@ -50,10 +50,7 @@ import xyz.reknown.fastercrystals.ver.pickable.*;
 import xyz.reknown.fastercrystals.ver.range.Range_1_17_R1;
 import xyz.reknown.fastercrystals.ver.range.Range_1_20_R4;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FasterCrystals extends JavaPlugin {
@@ -62,6 +59,8 @@ public class FasterCrystals extends JavaPlugin {
     @Getter private IRange range;
     @Getter private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
+
+    private final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
 
     @Override
     public void onLoad() {
@@ -171,7 +170,7 @@ public class FasterCrystals extends JavaPlugin {
 
     public void spawnCrystal(Location loc, Player player, ItemStack item) {
         Location clonedLoc = loc.clone().subtract(0.5, 0.0, 0.5);
-        if (clonedLoc.getBlock().getType() != Material.AIR) return;
+        if (!AIR_TYPES.contains(clonedLoc.getBlock().getType())) return;
 
         clonedLoc.add(0.5, 1.0, 0.5);
         List<Entity> nearbyEntities = new ArrayList<>(clonedLoc.getWorld().getNearbyEntities(clonedLoc, 0.5, 1, 0.5));
