@@ -35,7 +35,11 @@ import org.bukkit.util.Vector;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.user.User;
 
+import java.util.Set;
+
 public class InteractEntityListener extends SimplePacketListenerAbstract {
+    private final Set<Material> ALLOWED_BLOCKS = Set.of(Material.OBSIDIAN, Material.BEDROCK);
+
     @Override
     public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
         if (event.getPacketType() != PacketType.Play.Client.INTERACT_ENTITY) return;
@@ -66,7 +70,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
             Location blockLoc = entity.getLocation().subtract(0.5, 1.0, 0.5);
 
             RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, plugin.getRange().block(player));
-            if (result == null || result.getHitBlock().getType() != Material.OBSIDIAN) return;
+            if (result == null || !ALLOWED_BLOCKS.contains(result.getHitBlock().getType())) return;
 
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
