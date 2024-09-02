@@ -22,6 +22,7 @@ public enum AnimPackets {
     START_DIGGING,
     ATTACK,
     INV_DROP,
+    CREATIVE_INV_ACTION,
     IGNORE,
     MISC
 }

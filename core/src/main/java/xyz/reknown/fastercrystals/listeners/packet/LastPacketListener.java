@@ -52,8 +52,8 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
         // So, need to ensure ANIMATION is not processed in the *main thread* if the following packet is inv dropping
         // Even if this is MONITOR priority, it will run before the main thread task in AnimationListener
         if (user.getLastPacket() == AnimPackets.ANIMATION) {
-            // If the following packet is NOT inv dropping, then don't ignore anim
-            user.setIgnoreAnim(animPacket == AnimPackets.INV_DROP);
+            // Ignore anim if the following packet is inventory dropping or a creative action
+            user.setIgnoreAnim(animPacket == AnimPackets.INV_DROP || animPacket == AnimPackets.CREATIVE_INV_ACTION);
         }
 
         // Still required for other actions (e.g. dropping without inventory)
@@ -79,6 +79,8 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
                             && wrapper.getSlot() == -999)) {
                 return AnimPackets.INV_DROP;
             }
+        } else if (event.getPacketType() == PacketType.Play.Client.CREATIVE_INVENTORY_ACTION) {
+            return AnimPackets.CREATIVE_INV_ACTION;
         } else if (event.getPacketType() == PacketType.Play.Client.PLAYER_BLOCK_PLACEMENT
                 || event.getPacketType() == PacketType.Play.Client.USE_ITEM) {
             return AnimPackets.IGNORE;
