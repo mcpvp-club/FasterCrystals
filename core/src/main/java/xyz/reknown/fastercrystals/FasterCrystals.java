@@ -70,7 +70,8 @@ public class FasterCrystals extends JavaPlugin {
                 .reEncodeByDefault(false);
         PacketEvents.getAPI().load();
 
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this)
+                .missingExecutorImplementationMessage("Only players can run this command."));
     }
 
     @Override
