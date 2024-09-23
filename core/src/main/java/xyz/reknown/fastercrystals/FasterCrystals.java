@@ -148,10 +148,6 @@ public class FasterCrystals extends JavaPlugin {
 
         int pluginId = 22397;
         new Metrics(this, pluginId);
-
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            getLogger().info(String.valueOf(crystalIds.size()));
-        }, 20, 20);
     }
 
     @Override
