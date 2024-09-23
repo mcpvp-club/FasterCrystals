@@ -30,7 +30,7 @@ public class EntitySpawnListener implements Listener {
     public void onEntitySpawn(EntitySpawnEvent event) {
         if (event.getEntityType() == EntityType.ENDER_CRYSTAL) {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-            plugin.addCrystal(event.getEntity().getEntityId(), (EnderCrystal) event.getEntity());
+            plugin.getCrystalIds().put(event.getEntity().getEntityId(), (EnderCrystal) event.getEntity());
         }
     }
 }

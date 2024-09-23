@@ -32,7 +32,7 @@ public class EntityRemoveFromWorldListener implements Listener {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
             // add delay so that it is detected as a crystal when interact happens after destruction
             FoliaScheduler.getGlobalRegionScheduler().runDelayed(plugin,
-                    task -> plugin.removeCrystal(event.getEntity().getEntityId()), 40L);
+                    task -> plugin.getCrystalIds().remove(event.getEntity().getEntityId()), 40L);
         }
     }
 }

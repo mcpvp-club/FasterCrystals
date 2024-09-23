@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package xyz.reknown.fastercrystals;
@@ -37,10 +37,7 @@ import xyz.reknown.fastercrystals.api.IPickableChecker;
 import xyz.reknown.fastercrystals.api.IRange;
 import xyz.reknown.fastercrystals.bstats.Metrics;
 import xyz.reknown.fastercrystals.commands.impl.FastercrystalsCommand;
-import xyz.reknown.fastercrystals.listeners.bukkit.EntityRemoveFromWorldListener;
-import xyz.reknown.fastercrystals.listeners.bukkit.EntitySpawnListener;
-import xyz.reknown.fastercrystals.listeners.bukkit.PlayerJoinListener;
-import xyz.reknown.fastercrystals.listeners.bukkit.PlayerQuitListener;
+import xyz.reknown.fastercrystals.listeners.bukkit.*;
 import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
 import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
 import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
@@ -53,11 +50,12 @@ import xyz.reknown.fastercrystals.ver.range.Range_1_20_R4;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Getter
 public class FasterCrystals extends JavaPlugin {
-    @Getter private ICrystalDamager damager;
-    @Getter private IPickableChecker pickableChecker;
-    @Getter private IRange range;
-    @Getter private Users users;
+    private ICrystalDamager damager;
+    private IPickableChecker pickableChecker;
+    private IRange range;
+    private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
 
     private final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
@@ -141,6 +139,7 @@ public class FasterCrystals extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EntitySpawnListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldUnloadListener(), this);
 
         PacketEvents.getAPI().getEventManager().registerListener(new AnimationListener());
         PacketEvents.getAPI().getEventManager().registerListener(new InteractEntityListener());
@@ -149,24 +148,16 @@ public class FasterCrystals extends JavaPlugin {
 
         int pluginId = 22397;
         new Metrics(this, pluginId);
+
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            getLogger().info(String.valueOf(crystalIds.size()));
+        }, 20, 20);
     }
 
     @Override
     public void onDisable() {
         PacketEvents.getAPI().terminate();
         CommandAPI.onDisable();
-    }
-
-    public void addCrystal(int entityId, EnderCrystal entity) {
-        crystalIds.put(entityId, entity);
-    }
-
-    public EnderCrystal getCrystal(int entityId) {
-        return crystalIds.get(entityId);
-    }
-
-    public void removeCrystal(int entityId) {
-        crystalIds.remove(entityId);
     }
 
     public void spawnCrystal(Location loc, Player player, ItemStack item) {

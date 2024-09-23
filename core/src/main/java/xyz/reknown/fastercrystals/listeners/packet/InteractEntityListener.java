@@ -61,7 +61,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         if (item.getType() != Material.END_CRYSTAL) return;
 
         int entityId = wrapper.getEntityId();
-        EnderCrystal entity = plugin.getCrystal(entityId);
+        EnderCrystal entity = plugin.getCrystalIds().get(entityId);
         if (entity == null) return;
 
         Location eyeLoc = player.getEyeLocation();
