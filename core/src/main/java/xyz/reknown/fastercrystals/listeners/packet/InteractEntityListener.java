@@ -38,7 +38,7 @@ import xyz.reknown.fastercrystals.user.User;
 import java.util.Set;
 
 public class InteractEntityListener extends SimplePacketListenerAbstract {
-    private final Set<Material> ALLOWED_BLOCKS = Set.of(Material.OBSIDIAN, Material.BEDROCK);
+    private static final Set<Material> ALLOWED_BLOCKS = Set.of(Material.OBSIDIAN, Material.BEDROCK);
 
     @Override
     public void onPacketPlayReceive(PacketPlayReceiveEvent event) {

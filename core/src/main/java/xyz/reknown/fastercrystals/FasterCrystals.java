@@ -58,7 +58,7 @@ public class FasterCrystals extends JavaPlugin {
     private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
 
-    private final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
+    private static final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
 
     @Override
     public void onLoad() {
@@ -161,7 +161,8 @@ public class FasterCrystals extends JavaPlugin {
         if (!AIR_TYPES.contains(clonedLoc.getBlock().getType())) return;
 
         clonedLoc.add(0.5, 1.0, 0.5);
-        List<Entity> nearbyEntities = new ArrayList<>(clonedLoc.getWorld().getNearbyEntities(clonedLoc, 0.5, 1, 0.5));
+        List<Entity> nearbyEntities = new ArrayList<>(clonedLoc.getWorld().getNearbyEntities(clonedLoc, 0.5, 1, 0.5,
+                entity -> !(entity instanceof Player p) || p.getGameMode() != GameMode.SPECTATOR));
 
         if (nearbyEntities.isEmpty()) {
             loc.getWorld().spawn(clonedLoc.subtract(0.0, 1.0, 0.0), EnderCrystal.class, entity -> entity.setShowingBottom(false));
