@@ -18,8 +18,8 @@
 plugins {
     `java-library`
 
-    // Shades and relocates dependencies into our plugin jar. See https://imperceptiblethoughts.com/shadow/introduction/
-    id("io.github.goooler.shadow") version "8.1.7"
+    // Shades and relocates dependencies into our plugin jar. See https://gradleup.com/shadow/getting-started/
+    id("com.gradleup.shadow") version "8.3.4"
 }
 
 java {
@@ -52,8 +52,8 @@ dependencies {
     implementation(project(":ver:v1_18", "reobf"))
     implementation(project(":ver:v1_17", "reobf"))
 
-    implementation("com.github.retrooper:packetevents-spigot:2.5.1-SNAPSHOT")
-    implementation("dev.jorel:commandapi-bukkit-shade:9.5.3")
+    implementation("com.github.retrooper:packetevents-spigot:2.6.0-SNAPSHOT")
+    implementation("dev.jorel:commandapi-bukkit-shade:9.6.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
 
