@@ -23,6 +23,7 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,6 +38,7 @@ import xyz.reknown.fastercrystals.listeners.bukkit.*;
 import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
 import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
 import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
+import xyz.reknown.fastercrystals.papi.FasterCrystalsExpansion;
 import xyz.reknown.fastercrystals.user.Users;
 
 import java.util.*;
@@ -81,6 +83,11 @@ public class FasterCrystals extends JavaPlugin {
         PacketEvents.getAPI().getEventManager().registerListener(new InteractEntityListener());
         PacketEvents.getAPI().getEventManager().registerListener(new LastPacketListener());
         PacketEvents.getAPI().init();
+
+        // Register PlaceholderAPI expansions
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new FasterCrystalsExpansion().register();
+        }
 
         int pluginId = 22397;
         new Metrics(this, pluginId);

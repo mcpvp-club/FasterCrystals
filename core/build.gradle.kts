@@ -87,5 +87,5 @@ bukkitPluginYaml {
     authors.add("Jyguy")
     apiVersion = "1.20.5"
     foliaSupported = true
-    softDepend.addAll("ProtocolLib", "ProtocolSupport", "ViaVersion", "ViaBackwards", "ViaRewind", "Geyser-Spigot")
+    softDepend.addAll("PlaceholderAPI", "ProtocolLib", "ProtocolSupport", "ViaVersion", "ViaBackwards", "ViaRewind", "Geyser-Spigot")
 }
