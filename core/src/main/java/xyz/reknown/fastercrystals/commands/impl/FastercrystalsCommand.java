@@ -21,10 +21,9 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -67,13 +66,12 @@ public class FastercrystalsCommand extends AbstractCommand {
 
         MiniMessage mm = MiniMessage.miniMessage();
         Component component = mm.deserialize(text, Placeholder.parsed("state", state));
-        // relocating net.kyori.*, can't use sendMessage(Component)
-        player.sendMessage(BungeeComponentSerializer.get().serialize(component));
+        player.sendMessage(component);
     }
 
     public void runReload(Player player, CommandArguments args) {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
         plugin.reloadConfig();
-        player.sendMessage(ChatColor.GREEN + "Reloaded FasterCrystals config!");
+        player.sendMessage(Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN));
     }
 }

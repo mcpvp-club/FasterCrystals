@@ -18,9 +18,14 @@
 plugins {
     `java-library`
 
-    // Shades and relocates dependencies into our plugin jar. See https://gradleup.com/shadow/getting-started/
+    id("io.papermc.paperweight.userdev")
+    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.2.0"
     id("com.gradleup.shadow") version "8.3.4"
 }
+
+version = rootProject.version
+
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 java {
     // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 8 installed for example.
@@ -34,28 +39,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 
-    // Shadow will include the runtimeClasspath by default, which implementation adds to.
-    // Dependencies you don't want to include go in the compileOnly configuration.
-    // Make sure to relocate shaded dependencies!
     implementation(project(":api"))
-    implementation(project(":ver:v1_21", "reobf"))
-    implementation(project(":ver:v1_20_5", "reobf"))
-    implementation(project(":ver:v1_20_3", "reobf"))
-    implementation(project(":ver:v1_20_2", "reobf"))
-    implementation(project(":ver:v1_20", "reobf"))
-    implementation(project(":ver:v1_19_4", "reobf"))
-    implementation(project(":ver:v1_19_3", "reobf"))
-    implementation(project(":ver:v1_19", "reobf"))
-    implementation(project(":ver:v1_18_2", "reobf"))
-    implementation(project(":ver:v1_18", "reobf"))
-    implementation(project(":ver:v1_17", "reobf"))
-
     implementation("com.github.retrooper:packetevents-spigot:2.6.0-SNAPSHOT")
-    implementation("dev.jorel:commandapi-bukkit-shade:9.6.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
-    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.6.1")
 
     compileOnly("org.projectlombok:lombok:1.18.34")
     annotationProcessor("org.projectlombok:lombok:1.18.34")
@@ -65,25 +53,11 @@ tasks {
     compileJava {
         // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
         // See https://openjdk.java.net/jeps/247 for more information.
-        options.release.set(17)
+        options.release.set(21)
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
     }
-    processResources {
-        filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
-        val props = mapOf(
-                "name" to rootProject.name,
-                "version" to rootProject.version,
-                "description" to rootProject.description,
-                "apiVersion" to "1.17"
-        )
-        inputs.properties(props)
-        filesMatching("plugin.yml") {
-            expand(props)
-        }
-    }
-
     shadowJar {
         archiveBaseName.set("pvpclub-${rootProject.name}")
         archiveClassifier.set("")
@@ -93,8 +67,19 @@ tasks {
         relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
         relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
         relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
-        relocate("net.kyori", "xyz.reknown.fastercrystals.kyori")
 
         from("../LICENSE")
     }
+}
+
+// Configure plugin.yml generation
+// - name, version, and description are inherited from the Gradle project.
+bukkitPluginYaml {
+    name = "ChronovaDuels"
+    main = "xyz.reknown.fastercrystals.FasterCrystals"
+    version = project.version.toString()
+    authors.add("Jyguy")
+    apiVersion = "1.20.5"
+    foliaSupported = true
+    softDepend.addAll("ProtocolLib", "ProtocolSupport", "ViaVersion", "ViaBackwards", "ViaRewind", "Geyser-Spigot")
 }

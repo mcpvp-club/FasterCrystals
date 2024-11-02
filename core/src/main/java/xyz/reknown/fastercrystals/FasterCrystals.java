@@ -23,7 +23,6 @@ import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,9 +31,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import xyz.reknown.fastercrystals.api.ICrystalDamager;
-import xyz.reknown.fastercrystals.api.IPickableChecker;
-import xyz.reknown.fastercrystals.api.IRange;
 import xyz.reknown.fastercrystals.bstats.Metrics;
 import xyz.reknown.fastercrystals.commands.impl.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.listeners.bukkit.*;
@@ -42,19 +38,12 @@ import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
 import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
 import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
 import xyz.reknown.fastercrystals.user.Users;
-import xyz.reknown.fastercrystals.ver.damager.*;
-import xyz.reknown.fastercrystals.ver.pickable.*;
-import xyz.reknown.fastercrystals.ver.range.Range_1_17_R1;
-import xyz.reknown.fastercrystals.ver.range.Range_1_20_R4;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class FasterCrystals extends JavaPlugin {
-    private ICrystalDamager damager;
-    private IPickableChecker pickableChecker;
-    private IRange range;
     private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
 
@@ -75,61 +64,8 @@ public class FasterCrystals extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        range = new Range_1_17_R1();
-
-        switch (Bukkit.getMinecraftVersion()) {
-            case "1.21.3": case "1.21.2": case "1.21.1": case "1.21":
-                damager = new CrystalDamager_1_21_R1();
-                pickableChecker = new PickableChecker_1_21_R1();
-                range = new Range_1_20_R4();
-                break;
-            case "1.20.6": case "1.20.5":
-                damager = new CrystalDamager_1_20_R4();
-                pickableChecker = new PickableChecker_1_20_R4();
-                range = new Range_1_20_R4();
-                break;
-            case "1.20.4": case "1.20.3":
-                damager = new CrystalDamager_1_20_R3();
-                pickableChecker = new PickableChecker_1_20_R3();
-                break;
-            case "1.20.2":
-                damager = new CrystalDamager_1_20_R2();
-                pickableChecker = new PickableChecker_1_20_R2();
-                break;
-            case "1.20.1": case "1.20":
-                damager = new CrystalDamager_1_20_R1();
-                pickableChecker = new PickableChecker_1_20_R1();
-                break;
-            case "1.19.4":
-                damager = new CrystalDamager_1_19_R3();
-                pickableChecker = new PickableChecker_1_19_R3();
-                break;
-            case "1.19.3":
-                damager = new CrystalDamager_1_19_R2();
-                pickableChecker = new PickableChecker_1_19_R2();
-                break;
-            case "1.19.2": case "1.19.1": case "1.19":
-                damager = new CrystalDamager_1_19_R1();
-                pickableChecker = new PickableChecker_1_19_R1();
-                break;
-            case "1.18.2":
-                damager = new CrystalDamager_1_18_R2();
-                pickableChecker = new PickableChecker_1_18_R2();
-                break;
-            case "1.18.1": case "1.18":
-                damager = new CrystalDamager_1_18_R1();
-                pickableChecker = new PickableChecker_1_18_R1();
-                break;
-            case "1.17.1":
-                damager = new CrystalDamager_1_17_R1();
-                pickableChecker = new PickableChecker_1_17_R1();
-                break;
-            default:
-                throw new RuntimeException("Invalid server version! FasterCrystals supports 1.17.1 - 1.21.3");
-        }
 
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
-
         this.users = new Users();
 
         CommandAPI.onEnable();

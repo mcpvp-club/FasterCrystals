@@ -21,9 +21,15 @@ import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSources;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.entity.CraftEnderCrystal;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -57,10 +63,10 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
                     direction,
-                    plugin.getRange().entity(player),
+                    player.getAttribute(Attribute.PLAYER_ENTITY_INTERACTION_RANGE).getValue(),
                     0.0,
                     entity -> {
-                        if (!plugin.getPickableChecker().isPickable(entity)) return false;
+                        if (!((CraftEntity) entity).getHandle().isPickable()) return false;
                         if (entity.getType() != EntityType.PLAYER) return true;
 
                         Player p = (Player) entity;
@@ -72,7 +78,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             if (result == null) return;
 
             Entity entity = result.getHitEntity();
-            if (entity == null || entity.getType() != EntityType.ENDER_CRYSTAL) return;
+            if (entity == null || entity.getType() != EntityType.END_CRYSTAL) return;
 
             // Ignore if the entity was spawned in the same tick
             // This is to avoid "double popping" situations; see https://github.com/mcpvp-club/FasterCrystals/issues/3
@@ -102,7 +108,9 @@ public class AnimationListener extends SimplePacketListenerAbstract {
                 }
             }
 
-            plugin.getDamager().damage(entity, player);
+            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+            DamageSources damageSources = serverPlayer.level().damageSources();
+            ((CraftEnderCrystal) entity).getHandle().hurt(damageSources.playerAttack(serverPlayer), 1);
         }, null);
     }
 }

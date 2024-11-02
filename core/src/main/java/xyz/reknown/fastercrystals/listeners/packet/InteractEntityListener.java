@@ -26,6 +26,7 @@ import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -69,7 +70,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         FoliaScheduler.getEntityScheduler().run(entity, plugin, task -> {
             Location blockLoc = entity.getLocation().subtract(0.5, 1.0, 0.5);
 
-            RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, plugin.getRange().block(player));
+            RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, player.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE).getValue());
             if (result == null || !ALLOWED_BLOCKS.contains(result.getHitBlock().getType())) return;
 
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;

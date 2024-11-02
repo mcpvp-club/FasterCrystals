@@ -28,7 +28,7 @@ import xyz.reknown.fastercrystals.FasterCrystals;
 public class EntitySpawnListener implements Listener {
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {
-        if (event.getEntityType() == EntityType.ENDER_CRYSTAL) {
+        if (event.getEntityType() == EntityType.END_CRYSTAL) {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
             plugin.getCrystalIds().put(event.getEntity().getEntityId(), (EnderCrystal) event.getEntity());
         }
