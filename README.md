@@ -6,6 +6,6 @@ This is the main reason why high ping players cannot crystal quickly normally; t
 The plugin will only function on Paper (or its compatible forks) and Folia servers.
 
 ## Building
-`./gradlew :core:shadowJar`
+`./gradlew :core:build`
 
 The output file will be located in `./core/build/libs`.
