@@ -28,7 +28,7 @@ import xyz.reknown.fastercrystals.FasterCrystals;
 public class EntityRemoveFromWorldListener implements Listener {
     @EventHandler
     public void onEntityRemoveFromWorld(EntityRemoveFromWorldEvent event) {
-        if (event.getEntityType() == EntityType.ENDER_CRYSTAL) {
+        if (event.getEntityType() == EntityType.END_CRYSTAL) {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
             // add delay so that it is detected as a crystal when interact happens after destruction
             FoliaScheduler.getGlobalRegionScheduler().runDelayed(plugin,
