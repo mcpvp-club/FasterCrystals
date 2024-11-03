@@ -35,7 +35,6 @@ java {
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.codemc.org/repository/maven-public/")
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
@@ -45,7 +44,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     implementation(project(":api"))
-    implementation("com.github.retrooper:packetevents-spigot:2.6.0-SNAPSHOT")
+    implementation("com.github.retrooper:packetevents-spigot:2.6.0")
     implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.6.1")
 
     compileOnly("org.projectlombok:lombok:1.18.34")
