@@ -80,7 +80,7 @@ tasks {
 // Configure plugin.yml generation
 // - name, version, and description are inherited from the Gradle project.
 bukkitPluginYaml {
-    name = "ChronovaDuels"
+    name = "FasterCrystals"
     main = "xyz.reknown.fastercrystals.FasterCrystals"
     version = project.version.toString()
     authors.add("Jyguy")
