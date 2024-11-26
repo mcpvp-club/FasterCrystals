@@ -20,7 +20,7 @@ plugins {
 
     id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.2.0"
-    id("com.gradleup.shadow") version "8.3.4"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 version = rootProject.version
