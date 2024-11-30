@@ -21,15 +21,11 @@ import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSources;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.entity.CraftEnderCrystal;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -108,9 +104,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
                 }
             }
 
-            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-            DamageSources damageSources = serverPlayer.level().damageSources();
-            ((CraftEnderCrystal) entity).getHandle().hurt(damageSources.playerAttack(serverPlayer), 1);
+            player.attack(entity);
         }, null);
     }
 }
