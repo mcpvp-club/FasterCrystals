@@ -21,5 +21,4 @@ plugins {
 
 rootProject.name = "FasterCrystals"
 
-include("api")
 include("core")

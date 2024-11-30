@@ -43,7 +43,6 @@ dependencies {
 
     compileOnly("me.clip:placeholderapi:2.11.6")
 
-    implementation(project(":api"))
     implementation("com.github.retrooper:packetevents-spigot:2.6.0")
     implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.6.1")
 
