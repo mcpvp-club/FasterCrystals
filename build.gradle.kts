@@ -17,7 +17,7 @@
 
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.7.5" apply false
+    id("io.papermc.paperweight.userdev") version "1.7.6" apply false
 }
 
 group = "xyz.reknown.fastercrystals"
