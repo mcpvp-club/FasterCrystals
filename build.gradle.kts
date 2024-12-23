@@ -17,9 +17,69 @@
 
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8"
+    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.2.0"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 group = "xyz.reknown.fastercrystals"
 version = "1.9.1"
 description = "Uses packets to manually break/place crystals"
+
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+
+java {
+    // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 8 installed for example.
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+repositories {
+    maven("https://repo.codemc.org/repository/maven-public/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+}
+
+dependencies {
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
+
+    compileOnly("me.clip:placeholderapi:2.11.6")
+
+    implementation("com.github.retrooper:packetevents-spigot:2.7.0")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.7.0")
+
+    compileOnly("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
+}
+
+tasks {
+    build {
+        dependsOn("shadowJar")
+    }
+    compileJava {
+        // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
+        // See https://openjdk.java.net/jeps/247 for more information.
+        options.release.set(21)
+    }
+    javadoc {
+        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+    }
+    shadowJar {
+        minimize()
+        relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
+        relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
+        relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
+
+        from("../LICENSE")
+    }
+}
+
+// Configure plugin.yml generation
+// - name, version, and description are inherited from the Gradle project.
+bukkitPluginYaml {
+    name = "FasterCrystals"
+    main = "xyz.reknown.fastercrystals.FasterCrystals"
+    version = project.version.toString()
+    authors.add("Jyguy")
+    apiVersion = "1.20.5"
+    foliaSupported = true
+    softDepend.addAll("PlaceholderAPI", "ProtocolLib", "ProtocolSupport", "ViaVersion", "ViaBackwards", "ViaRewind", "Geyser-Spigot")
+}

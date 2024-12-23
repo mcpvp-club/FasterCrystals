@@ -34,9 +34,9 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew :core:build
+      run: ./gradlew build
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        path: core/build/libs/pvpclub-FasterCrystals-*.jar
+        path: build/libs/FasterCrystals-*-all.jar

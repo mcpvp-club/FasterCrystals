@@ -20,5 +20,3 @@ plugins {
 }
 
 rootProject.name = "FasterCrystals"
-
-include("core")
