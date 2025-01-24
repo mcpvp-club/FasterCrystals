@@ -50,7 +50,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
 
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
         Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SPECTATOR) return;
+        if (player == null || player.getGameMode() == GameMode.SPECTATOR) return;
 
         User user = plugin.getUsers().get(player);
         if (user == null || !user.isFasterCrystals()) return;
