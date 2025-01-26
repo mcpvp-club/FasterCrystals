@@ -1,3 +1,5 @@
+[![Modrinth](https://img.shields.io/modrinth/v/pvpclub-FasterCrystals?label=Modrinth&style=for-the-badge)](https://modrinth.com/plugin/pvpclub-fastercrystals)
+
 # FasterCrystals
 This plugin allows high ping players to crystal quickly by processing the left/right clicks *as the packets come in*.
 This means that the server does not have to rely on the client's attack packet to destroy a crystal, and also does not have to rely on the client's block interact packet to place a crystal.
