@@ -58,6 +58,11 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
             if (user.isIgnoreAnim()) return; // animation is for inventory drop item
 
+            // Ensure the player did not move too far (specifically, to another Folia region)
+            // Otherwise, the below will throw an exception for attempting to raytrace from a different thread
+            Location newEyeLoc = player.getEyeLocation();
+            if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100) return; // it is unrealistic for a player to move 10 blocks in this time
+
             RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
                     direction,
