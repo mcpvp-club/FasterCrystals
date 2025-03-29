@@ -21,12 +21,16 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Users {
-    private final Map<UUID, User> users = new HashMap<>();
+    private final Map<UUID, User> users;
+
+    public Users() {
+        this.users = new ConcurrentHashMap<>();
+    }
 
     public void add(User user) {
         users.put(user.getPlayer().getUniqueId(), user);
