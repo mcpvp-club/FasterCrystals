@@ -53,6 +53,8 @@ public class FasterCrystals extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        saveDefaultConfig();
+
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().getSettings()
                 .checkForUpdates(false)
@@ -60,13 +62,12 @@ public class FasterCrystals extends JavaPlugin {
         PacketEvents.getAPI().load();
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this)
-                .missingExecutorImplementationMessage("Only players can run this command."));
+                .missingExecutorImplementationMessage("Only players can run this command.")
+                .skipReloadDatapacks(!getConfig().getBoolean("commandapi-datapack-reload")));
     }
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
         this.users = new Users();
 
