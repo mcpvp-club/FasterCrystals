@@ -4,3 +4,6 @@ state:
   'off': '<yellow>off</yellow>'
 
 text: '<gold>Turned</gold> <state> <gold>your FasterCrystals setting.</gold>'
+
+# Toggles CommandAPI's datapack reloading on server startup.
+commandapi-datapack-reload: true
