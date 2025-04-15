@@ -17,9 +17,9 @@
 
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16"
     id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.2.0"
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 group = "xyz.reknown.fastercrystals"
@@ -35,6 +35,7 @@ java {
 
 repositories {
     maven("https://repo.codemc.org/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
@@ -43,11 +44,11 @@ dependencies {
 
     compileOnly("me.clip:placeholderapi:2.11.6")
 
-    implementation("com.github.retrooper:packetevents-spigot:2.7.0")
-    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.7.0")
+    implementation("com.github.retrooper:packetevents-spigot:2.8.0-SNAPSHOT")
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:10.0.0")
 
-    compileOnly("org.projectlombok:lombok:1.18.34")
-    annotationProcessor("org.projectlombok:lombok:1.18.34")
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
 }
 
 tasks {
