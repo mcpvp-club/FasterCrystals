@@ -43,17 +43,18 @@ dependencies {
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 
     compileOnly("me.clip:placeholderapi:2.11.6")
-
-    implementation("com.github.retrooper:packetevents-spigot:2.8.0-SNAPSHOT")
-    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:10.0.0")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.8.0-SNAPSHOT")
+    compileOnly("dev.jorel:commandapi-bukkit-core:10.0.0")
 
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
 }
 
 tasks {
-    build {
-        dependsOn("shadowJar")
+    jar {
+        from(rootDir) {
+            include("LICENSE")
+        }
     }
     compileJava {
         // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
@@ -62,14 +63,6 @@ tasks {
     }
     javadoc {
         options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-    }
-    shadowJar {
-        minimize()
-        relocate("com.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.api")
-        relocate("io.github.retrooper.packetevents", "xyz.reknown.fastercrystals.packetevents.impl")
-        relocate("dev.jorel.commandapi", "xyz.reknown.fastercrystals.commandapi")
-
-        from("../LICENSE")
     }
 }
 
@@ -82,5 +75,5 @@ bukkitPluginYaml {
     authors.add("Jyguy")
     apiVersion = "1.20.5"
     foliaSupported = true
-    softDepend.addAll("PlaceholderAPI", "ProtocolLib", "ProtocolSupport", "ViaVersion", "ViaBackwards", "ViaRewind", "Geyser-Spigot")
+    depend.addAll("packetevents", "CommandAPI")
 }

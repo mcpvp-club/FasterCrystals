@@ -18,9 +18,6 @@
 package xyz.reknown.fastercrystals;
 
 import com.github.retrooper.packetevents.PacketEvents;
-import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -52,25 +49,12 @@ public class FasterCrystals extends JavaPlugin {
     private static final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
 
     @Override
-    public void onLoad() {
-        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
-        PacketEvents.getAPI().getSettings()
-                .checkForUpdates(false)
-                .reEncodeByDefault(false);
-        PacketEvents.getAPI().load();
-
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this)
-                .missingExecutorImplementationMessage("Only players can run this command."));
-    }
-
-    @Override
     public void onEnable() {
         saveDefaultConfig();
 
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
         this.users = new Users();
 
-        CommandAPI.onEnable();
         new FastercrystalsCommand().register();
 
         getServer().getPluginManager().registerEvents(new EntityRemoveFromWorldListener(), this);
@@ -82,7 +66,6 @@ public class FasterCrystals extends JavaPlugin {
         PacketEvents.getAPI().getEventManager().registerListener(new AnimationListener());
         PacketEvents.getAPI().getEventManager().registerListener(new InteractEntityListener());
         PacketEvents.getAPI().getEventManager().registerListener(new LastPacketListener());
-        PacketEvents.getAPI().init();
 
         // Register PlaceholderAPI expansions
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -91,12 +74,6 @@ public class FasterCrystals extends JavaPlugin {
 
         int pluginId = 22397;
         new Metrics(this, pluginId);
-    }
-
-    @Override
-    public void onDisable() {
-        PacketEvents.getAPI().terminate();
-        CommandAPI.onDisable();
     }
 
     public void spawnCrystal(Location loc, Player player, ItemStack item) {
