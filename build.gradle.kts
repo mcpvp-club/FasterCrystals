@@ -76,4 +76,5 @@ bukkitPluginYaml {
     apiVersion = "1.20.5"
     foliaSupported = true
     depend.addAll("packetevents", "CommandAPI")
+    softDepend.addAll("PlaceholderAPI")
 }
