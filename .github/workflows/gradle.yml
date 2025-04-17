@@ -39,4 +39,4 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        path: build/libs/FasterCrystals-*-all.jar
+        path: build/libs/FasterCrystals-*.jar
