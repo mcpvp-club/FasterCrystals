@@ -7,7 +7,10 @@ This is the main reason why high ping players cannot crystal quickly normally; t
 
 The plugin will only function on Paper (or its compatible forks) and Folia servers.
 
-## Building
-`./gradlew build`
+## Installation
+Both [PacketEvents](https://github.com/retrooper/packetevents/releases) and [CommandAPI](https://github.com/CommandAPI/CommandAPI/releases) **must** be installed for this plugin to work.
 
-The output file will be located in `./build/libs/FasterCrystals-VERSION-all.jar`.
+## Building
+Clone the repository, `cd` into it, then `./gradlew build`.
+
+The output file will be located in `./build/libs/FasterCrystals-VERSION.jar`.
