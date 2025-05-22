@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.bstats.Metrics;
-import xyz.reknown.fastercrystals.commands.impl.FastercrystalsCommand;
+import xyz.reknown.fastercrystals.commands.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.listeners.bukkit.*;
 import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
 import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
@@ -57,7 +57,9 @@ public class FasterCrystals extends JavaPlugin {
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
         this.users = new Users();
 
-        new FastercrystalsCommand().register();
+        FastercrystalsCommand command = new FastercrystalsCommand(this);
+        getCommand("fastercrystals").setExecutor(command);
+        getCommand("fastercrystals").setTabCompleter(command);
 
         getServer().getPluginManager().registerEvents(new EntityRemoveFromWorldListener(), this);
         getServer().getPluginManager().registerEvents(new EntitySpawnListener(), this);
