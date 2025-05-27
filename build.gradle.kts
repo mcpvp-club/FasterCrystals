@@ -75,4 +75,5 @@ bukkitPluginYaml {
     foliaSupported = true
     depend.addAll("packetevents")
     softDepend.addAll("PlaceholderAPI")
+    commands.register("fastercrystals")
 }
