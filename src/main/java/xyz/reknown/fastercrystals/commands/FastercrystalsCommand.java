@@ -48,18 +48,18 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length == 0) return false;
+        if (args.length == 1) {
+            String subCommand = args[0].toLowerCase();
+            if (subCommand.equals("reload")) {
+                if (!sender.hasPermission("fastercrystals.reload")) {
+                    sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
+                    return true;
+                }
 
-        String subCommand = args[0].toLowerCase();
-        if (subCommand.equals("reload")) {
-            if (!sender.hasPermission("fastercrystals.reload")) {
-                sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
+                plugin.reloadConfig();
+                sender.sendMessage(Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN));
                 return true;
             }
-
-            plugin.reloadConfig();
-            sender.sendMessage(Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN));
-            return true;
         }
 
         if (!(sender instanceof Player player)) {
@@ -76,11 +76,12 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
 
         boolean toggle;
-        if (args.length > 1) {
-            if (ON_STRINGS.contains(subCommand)) toggle = true;
-            else if (OFF_STRINGS.contains(subCommand)) toggle = false;
+        if (args.length > 0) {
+            String toggleStr = args[0].toLowerCase();
+            if (ON_STRINGS.contains(toggleStr)) toggle = true;
+            else if (OFF_STRINGS.contains(toggleStr)) toggle = false;
             else {
-                sender.sendMessage(Component.text("Invalid input: " + subCommand, NamedTextColor.RED));
+                sender.sendMessage(Component.text("Invalid input: " + toggleStr, NamedTextColor.RED));
                 return true;
             }
         } else {
