@@ -8,7 +8,7 @@ This is the main reason why high ping players cannot crystal quickly normally; t
 The plugin will only function on Paper (or its compatible forks) and Folia servers.
 
 ## Installation
-Both [PacketEvents](https://github.com/retrooper/packetevents/releases) and [CommandAPI](https://github.com/CommandAPI/CommandAPI/releases) **must** be installed for this plugin to work.
+[PacketEvents](https://github.com/retrooper/packetevents/releases) **must** be installed for this plugin to work.
 
 ## Building
 Clone the repository, `cd` into it, then `./gradlew build`.
