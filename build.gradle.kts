@@ -17,9 +17,9 @@
 
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16"
-    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.2.0"
-    id("com.gradleup.shadow") version "8.3.6"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
+    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.3.0"
+    id("com.gradleup.shadow") version "8.3.7"
 }
 
 group = "xyz.reknown.fastercrystals"
@@ -42,7 +42,7 @@ dependencies {
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.retrooper:packetevents-spigot:2.8.0-SNAPSHOT")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.9.0-SNAPSHOT")
 
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
