@@ -67,7 +67,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
 
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
-        FoliaScheduler.getEntityScheduler().run(entity, plugin, task -> {
+        FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
             Location blockLoc = entity.getLocation().subtract(0.5, 1.0, 0.5);
 
             RayTraceResult result = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, player.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE).getValue());
@@ -76,6 +76,6 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
             plugin.spawnCrystal(entity.getLocation(), player, item);
-        }, null);
+        });
     }
 }
