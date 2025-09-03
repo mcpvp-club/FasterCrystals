@@ -30,6 +30,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.bstats.Metrics;
 import xyz.reknown.fastercrystals.commands.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.listeners.bukkit.*;
@@ -52,6 +53,7 @@ public class FasterCrystals extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        FasterCrystalsAPI.init(this);
         saveDefaultConfig();
 
         this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
