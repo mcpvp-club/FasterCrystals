@@ -25,14 +25,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import xyz.reknown.fastercrystals.FasterCrystals;
 
-/**
- * API for interacting with FasterCrystals toggle state.
- * Allows other plugins to enable, disable, or check whether
- * the FasterCrystals behavior is active for a specific player.
- *
- * @author Jyguy
- * @since 1.0
- */
+
 public class FasterCrystalsAPI {
 
     private static FasterCrystals plugin;
