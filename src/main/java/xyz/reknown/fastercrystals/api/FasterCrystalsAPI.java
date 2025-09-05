@@ -23,7 +23,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import xyz.reknown.fastercrystals.FasterCrystals;
 
-
 public class FasterCrystalsAPI {
     private static FasterCrystalsAPI instance;
 
@@ -34,6 +33,7 @@ public class FasterCrystalsAPI {
         this.plugin = plugin;
         this.fastCrystalsKey = new NamespacedKey(plugin, "fastcrystals");
     }
+
     /**
      * Initializes the API. Must be called once during plugin enabl
      *
@@ -58,7 +58,6 @@ public class FasterCrystalsAPI {
         }
         return instance;
     }
-
 
     /**
      * Sets the FasterCrystals toggle state for a specific player.
