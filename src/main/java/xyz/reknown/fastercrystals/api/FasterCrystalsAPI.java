@@ -25,8 +25,8 @@ import xyz.reknown.fastercrystals.FasterCrystals;
 
 
 public class FasterCrystalsAPI {
+    private static FasterCrystalsAPI instance;
 
-    private static FasterCrystals plugin;
     private final FasterCrystals plugin;
     private final NamespacedKey fastCrystalsKey;
 
@@ -66,9 +66,9 @@ public class FasterCrystalsAPI {
      * @param player  the player whose toggle state will be updated
      * @param enabled true to enable fast crystals, false to disable
      */
-    public static void setFastCrystals(Player player, boolean enabled) {
+    public void setFastCrystals(Player player, boolean enabled) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        pdc.set(getKey(), PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
+        pdc.set(fastCrystalsKey, PersistentDataType.BYTE, (byte) (enabled ? 1 : 0));
     }
 
     /**
@@ -77,9 +77,9 @@ public class FasterCrystalsAPI {
      * @param player the player to check
      * @return true if enabled, false otherwise
      */
-    public static boolean isFastCrystalsEnabled(Player player) {
+    public boolean isFastCrystalsEnabled(Player player) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        return pdc.getOrDefault(getKey(), PersistentDataType.BYTE, (byte) 1) == 1;
+        return pdc.getOrDefault(fastCrystalsKey, PersistentDataType.BYTE, (byte) 1) == 1;
     }
 
     /**
@@ -88,7 +88,7 @@ public class FasterCrystalsAPI {
      *
      * @param player the player whose toggle state will be flipped
      */
-    public static void toggleFastCrystals(Player player) {
+    public void toggleFastCrystals(Player player) {
         boolean newState = !isFastCrystalsEnabled(player);
         setFastCrystals(player, newState);
     }
