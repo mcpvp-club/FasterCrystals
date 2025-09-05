@@ -27,25 +27,38 @@ import xyz.reknown.fastercrystals.FasterCrystals;
 public class FasterCrystalsAPI {
 
     private static FasterCrystals plugin;
+    private final FasterCrystals plugin;
+    private final NamespacedKey fastCrystalsKey;
 
+    private FasterCrystalsAPI(FasterCrystals plugin) {
+        this.plugin = plugin;
+        this.fastCrystalsKey = new NamespacedKey(plugin, "fastcrystals");
+    }
     /**
-     * Initializes the API with a reference to the main plugin.
-     * Must be called during plugin enable phase.
+     * Initializes the API. Must be called once during plugin enabl
      *
-     * @param instance the FasterCrystals plugin instance
+     * @param plugin the FasterCrystals plugin instance
      */
-    public static void init(FasterCrystals instance) {
-        plugin = instance;
+    public static void init(FasterCrystals plugin) {
+        if (instance != null) {
+            throw new IllegalStateException("FasterCrystalsAPI is already initialized.");
+        }
+        instance = new FasterCrystalsAPI(plugin);
     }
 
     /**
-     * Gets the internal {@link NamespacedKey} used to store the toggle state.
+     * Gets the singleton instance of the API.
      *
-     * @return the toggle key
+     * @return the API instance
+     * @throws IllegalStateException if not initialised yet
      */
-    private static NamespacedKey getKey() {
-        return new NamespacedKey(plugin, "fastcrystals");
+    public static FasterCrystalsAPI getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("FasterCrystalsAPI has not been initialized yet.");
+        }
+        return instance;
     }
+
 
     /**
      * Sets the FasterCrystals toggle state for a specific player.
