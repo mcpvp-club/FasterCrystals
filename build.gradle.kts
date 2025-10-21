@@ -23,7 +23,7 @@ plugins {
 }
 
 group = "xyz.reknown.fastercrystals"
-version = "2.0.1"
+version = "2.1.0"
 description = "Uses packets to manually break/place crystals"
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
