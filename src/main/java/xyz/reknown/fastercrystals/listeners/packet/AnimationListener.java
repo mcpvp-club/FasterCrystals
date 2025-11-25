@@ -30,6 +30,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -48,7 +49,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
 
         User user = plugin.getUsers().get(player);
         if (player.getGameMode() == GameMode.SPECTATOR) return;
-        if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) return; // ignore weakness hits, tool hits are slow anyway
+        if (isAttackDamageReduced(player)) return; // ignore reduced hits, tool hits are slow anyway
         if (user == null || !user.isFasterCrystals()) return;
 
         AnimPackets lastPacket = user.getLastPacket();
@@ -113,5 +114,15 @@ public class AnimationListener extends SimplePacketListenerAbstract {
 
             player.attack(entity);
         });
+    }
+
+    private static boolean isAttackDamageReduced(Player player) {
+        PotionEffect weakness = player.getPotionEffect(PotionEffectType.WEAKNESS);
+        int weaknessLevel = weakness != null ? weakness.getAmplifier() + 1 : 0;
+
+        PotionEffect strength = player.getPotionEffect(PotionEffectType.STRENGTH);
+        int strengthLevel = strength != null ? strength.getAmplifier() + 1 : 0;
+
+        return strengthLevel * 3 - weaknessLevel * 4 < 0;
     }
 }
