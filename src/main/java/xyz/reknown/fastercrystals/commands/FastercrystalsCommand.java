@@ -85,7 +85,8 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
         } else {
-            toggle = pdc.getOrDefault(key, PersistentDataType.BYTE, (byte) 1) == 0;
+            byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
+            toggle = pdc.getOrDefault(key, PersistentDataType.BYTE, defaultState) == 0;
         }
 
         pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));

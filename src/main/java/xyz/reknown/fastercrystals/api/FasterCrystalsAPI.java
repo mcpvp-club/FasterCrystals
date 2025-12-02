@@ -35,7 +35,7 @@ public class FasterCrystalsAPI {
     }
 
     /**
-     * Initializes the API. Must be called once during plugin enabl
+     * Initializes the API. Must be called once during plugin enable
      *
      * @param plugin the FasterCrystals plugin instance
      */
@@ -78,7 +78,8 @@ public class FasterCrystalsAPI {
      */
     public boolean isFastCrystalsEnabled(Player player) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        return pdc.getOrDefault(fastCrystalsKey, PersistentDataType.BYTE, (byte) 1) == 1;
+        byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
+        return pdc.getOrDefault(fastCrystalsKey, PersistentDataType.BYTE, defaultState) == 1;
     }
 
     /**
