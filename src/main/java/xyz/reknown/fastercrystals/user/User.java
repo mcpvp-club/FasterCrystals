@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package xyz.reknown.fastercrystals.user;
@@ -41,6 +41,7 @@ public class User {
         FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
-        return pdc.getOrDefault(key, PersistentDataType.BYTE, (byte) 1) == 1;
+        byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
+        return pdc.getOrDefault(key, PersistentDataType.BYTE, defaultState) == 1;
     }
 }
