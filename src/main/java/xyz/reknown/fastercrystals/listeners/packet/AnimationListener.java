@@ -29,12 +29,12 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import xyz.reknown.fastercrystals.FasterCrystals;
+import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
 import xyz.reknown.fastercrystals.user.User;
 
@@ -42,8 +42,9 @@ public class AnimationListener extends SimplePacketListenerAbstract {
     @Override
     public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
         if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
+        if (!FasterCrystalsAPI.isAvailable()) return;
 
-        FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+        FasterCrystals plugin = FasterCrystalsAPI.getInstance().getPlugin();
         Player player = event.getPlayer();
 
         User user = plugin.getUsers().get(player);
@@ -54,76 +55,65 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         AnimPackets lastPacket = user.getLastPacket();
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
+        FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
+            if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
+            if (user.isIgnoreAnim()) return; // animation is for inventory drop item
 
-        runTask(plugin, eyeLoc, () -> handleCrystalAttack(player, user, lastPacket, eyeLoc, direction));
-    }
+            // Ensure the player did not move too far (specifically, to another Folia region)
+            // Otherwise, the below will throw an exception for attempting to raytrace from a different thread
+            Location newEyeLoc = player.getEyeLocation();
+            if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100) return; // it is unrealistic for a player to move 10 blocks in this time
 
-    private void runTask(FasterCrystals plugin, Location location, Runnable task) {
-        if (plugin.isEnabled()) {
-            FoliaScheduler.getRegionScheduler().run(plugin, location, t -> task.run());
-        } else {
-            task.run();
-        }
-    }
+            RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
+                    eyeLoc,
+                    direction,
+                    player.getAttribute(Attribute.PLAYER_ENTITY_INTERACTION_RANGE).getValue(),
+                    0.0,
+                    entity -> {
+                        if (!((CraftEntity) entity).getHandle().isPickable()) return false;
+                        if (entity.getType() != EntityType.PLAYER) return true;
 
-    private void handleCrystalAttack(Player player, User user, AnimPackets lastPacket, Location eyeLoc, Vector direction) {
-        if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
-        if (user.isIgnoreAnim()) return; // animation is for inventory drop item
+                        Player p = (Player) entity;
+                        if (p.getGameMode() == GameMode.SPECTATOR) return false;
 
-        // Ensure the player did not move too far (specifically, to another Folia region)
-        // Otherwise, the below will throw an exception for attempting to raytrace from a different thread
-        Location newEyeLoc = player.getEyeLocation();
-        if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100) return; // it is unrealistic for a player to move 10 blocks in this time
-
-        RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
-                eyeLoc,
-                direction,
-                player.getAttribute(Attribute.PLAYER_ENTITY_INTERACTION_RANGE).getValue(),
-                0.0,
-                entity -> {
-                    if (!((CraftEntity) entity).getHandle().isPickable()) return false;
-                    if (entity.getType() != EntityType.PLAYER) return true;
-
-                    Player p = (Player) entity;
-                    if (p.getGameMode() == GameMode.SPECTATOR) return false;
-
-                    return !player.getUniqueId().equals(p.getUniqueId()) && player.canSee(p);
-                }
-        );
-        if (result == null) return;
-
-        Entity entity = result.getHitEntity();
-        if (entity == null || entity.getType() != EntityType.END_CRYSTAL) return;
-
-        // Ignore if the entity was spawned in the same tick
-        // This is to avoid "double popping" situations; see https://github.com/mcpvp-club/FasterCrystals/issues/3
-        if (entity.getTicksLived() == 0) return;
-
-        // Raytrace entity obtains position on the other side of the bounding box when the player eye location is
-        //     within the bounding box. This causes the distance check to false positive.
-        // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
-        if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
-            RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
-                    player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
-            if (bResult != null) {
-                Block block = bResult.getHitBlock();
-                Vector eyeLocV = eyeLoc.toVector();
-                if (block != null) {
-                    // Check if a block was in front of the end crystal
-                    if (eyeLocV.distanceSquared(bResult.getHitPosition()) <= eyeLocV.distanceSquared(result.getHitPosition())) {
-                        return;
+                        return !player.getUniqueId().equals(p.getUniqueId()) && player.canSee(p);
                     }
+            );
+            if (result == null) return;
 
-                    // If true, it is in the middle of breaking a block
-                    // We only want the beginning of left click inputs (begin mining or attack)
-                    if (lastPacket != AnimPackets.START_DIGGING && lastPacket != AnimPackets.ATTACK) {
-                        return;
+            Entity entity = result.getHitEntity();
+            if (entity == null || entity.getType() != EntityType.END_CRYSTAL) return;
+
+            // Ignore if the entity was spawned in the same tick
+            // This is to avoid "double popping" situations; see https://github.com/mcpvp-club/FasterCrystals/issues/3
+            if (entity.getTicksLived() == 0) return;
+
+            // Raytrace entity obtains position on the other side of the bounding box when the player eye location is
+            //     within the bounding box. This causes the distance check to false positive.
+            // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
+            if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
+                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
+                        player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+                if (bResult != null) {
+                    Block block = bResult.getHitBlock();
+                    Vector eyeLocV = eyeLoc.toVector();
+                    if (block != null) {
+                        // Check if a block was in front of the end crystal
+                        if (eyeLocV.distanceSquared(bResult.getHitPosition()) <= eyeLocV.distanceSquared(result.getHitPosition())) {
+                            return;
+                        }
+
+                        // If true, it is in the middle of breaking a block
+                        // We only want the beginning of left click inputs (begin mining or attack)
+                        if (lastPacket != AnimPackets.START_DIGGING && lastPacket != AnimPackets.ATTACK) {
+                            return;
+                        }
                     }
                 }
             }
-        }
 
-        player.attack(entity);
+            player.attack(entity);
+        });
     }
 
     private static boolean isAttackDamageReduced(Player player) {

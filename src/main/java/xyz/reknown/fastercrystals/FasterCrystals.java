@@ -89,6 +89,7 @@ public class FasterCrystals extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        FasterCrystalsAPI.shutdown();
         for (SimplePacketListenerAbstract listener : this.listeners) {
             PacketEvents.getAPI().getEventManager().unregisterListener(listener);
         }
