@@ -33,6 +33,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jspecify.annotations.NonNull;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
@@ -40,9 +41,9 @@ import xyz.reknown.fastercrystals.user.User;
 
 public class AnimationListener extends SimplePacketListenerAbstract {
     @Override
-    public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
-        if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
+    public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
+        if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
 
         FasterCrystals plugin = FasterCrystalsAPI.getInstance().getPlugin();
         Player player = event.getPlayer();

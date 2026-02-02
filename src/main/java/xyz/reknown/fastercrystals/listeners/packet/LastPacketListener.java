@@ -26,8 +26,8 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientCl
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import xyz.reknown.fastercrystals.FasterCrystals;
+import org.jspecify.annotations.NonNull;
+import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
 import xyz.reknown.fastercrystals.user.User;
 
@@ -38,11 +38,12 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
     }
 
     @Override
-    public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
-        FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+    public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
+        if (!FasterCrystalsAPI.isAvailable()) return;
+
         Player player = event.getPlayer();
 
-        User user = plugin.getUsers().get(player);
+        User user = FasterCrystalsAPI.getInstance().getPlugin().getUsers().get(player);
         if (user == null) return;
 
         AnimPackets animPacket = getAnimPacket(event);
