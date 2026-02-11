@@ -30,10 +30,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jspecify.annotations.NonNull;
 import xyz.reknown.fastercrystals.FasterCrystals;
+import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.user.User;
 
 import java.util.Set;
@@ -42,15 +43,16 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
     private static final Set<Material> ALLOWED_BLOCKS = Set.of(Material.OBSIDIAN, Material.BEDROCK);
 
     @Override
-    public void onPacketPlayReceive(PacketPlayReceiveEvent event) {
+    public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
+        if (!FasterCrystalsAPI.isAvailable()) return;
         if (event.getPacketType() != PacketType.Play.Client.INTERACT_ENTITY) return;
 
         WrapperPlayClientInteractEntity wrapper = new WrapperPlayClientInteractEntity(event);
         if (wrapper.getAction() != WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return;
 
-        FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+        FasterCrystals plugin = FasterCrystalsAPI.getInstance().getPlugin();
         Player player = event.getPlayer();
-        if (player == null || player.getGameMode() == GameMode.SPECTATOR) return;
+        if (player.getGameMode() == GameMode.SPECTATOR) return;
 
         User user = plugin.getUsers().get(player);
         if (user == null || !user.isFasterCrystals()) return;

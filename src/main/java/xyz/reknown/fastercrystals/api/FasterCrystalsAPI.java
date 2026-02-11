@@ -17,6 +17,7 @@
 
 package xyz.reknown.fastercrystals.api;
 
+import lombok.Getter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -26,6 +27,7 @@ import xyz.reknown.fastercrystals.FasterCrystals;
 public class FasterCrystalsAPI {
     private static FasterCrystalsAPI instance;
 
+    @Getter
     private final FasterCrystals plugin;
     private final NamespacedKey fastCrystalsKey;
 
@@ -44,6 +46,22 @@ public class FasterCrystalsAPI {
             throw new IllegalStateException("FasterCrystalsAPI is already initialized.");
         }
         instance = new FasterCrystalsAPI(plugin);
+    }
+
+    /**
+     * Shuts down the API. Should be called during plugin disable
+     */
+    public static void shutdown() {
+        instance = null;
+    }
+
+    /**
+     * Checks if the API is available.
+     *
+     * @return true if initialized and not shut down, false otherwise
+     */
+    public static boolean isAvailable() {
+        return instance != null;
     }
 
     /**
