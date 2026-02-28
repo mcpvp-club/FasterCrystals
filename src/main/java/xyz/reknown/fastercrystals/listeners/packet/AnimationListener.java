@@ -49,6 +49,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         Player player = event.getPlayer();
 
         User user = plugin.getUsers().get(player);
+        if (event.isCancelled()) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         if (isAttackDamageReduced(player)) return; // ignore reduced hits, tool hits are slow anyway
         if (user == null || !user.isFasterCrystals()) return;
