@@ -44,6 +44,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
     public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
         if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
+        if (event.isCancelled()) return;
 
         FasterCrystals plugin = FasterCrystalsAPI.getInstance().getPlugin();
         Player player = event.getPlayer();
