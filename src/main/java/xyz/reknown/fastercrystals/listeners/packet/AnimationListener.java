@@ -44,12 +44,12 @@ public class AnimationListener extends SimplePacketListenerAbstract {
     public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
         if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
+        if (event.isCancelled()) return;
 
         FasterCrystals plugin = FasterCrystalsAPI.getInstance().getPlugin();
         Player player = event.getPlayer();
 
         User user = plugin.getUsers().get(player);
-        if (event.isCancelled()) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         if (isAttackDamageReduced(player)) return; // ignore reduced hits, tool hits are slow anyway
         if (user == null || !user.isFasterCrystals()) return;
