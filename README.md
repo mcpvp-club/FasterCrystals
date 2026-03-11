@@ -1,4 +1,4 @@
-[![Modrinth](https://img.shields.io/modrinth/v/pvpclub-FasterCrystals?label=Modrinth&style=for-the-badge)](https://modrinth.com/plugin/pvpclub-fastercrystals)
+[![Modrinth](https://img.shields.io/modrinth/v/FasterCrystals?label=Modrinth&style=for-the-badge)](https://modrinth.com/plugin/fastercrystals)
 
 # FasterCrystals
 This plugin allows high ping players to crystal quickly by processing the left/right clicks *as the packets come in*.
