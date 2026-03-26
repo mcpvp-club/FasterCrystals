@@ -23,24 +23,24 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
 
 @Getter
-public class User {
+public class CUser {
     private final Player player;
+
     @Setter
     private AnimPackets lastPacket;
     @Setter
     private boolean ignoreAnim;
 
-    public User(Player player) {
+    public CUser(Player player) {
         this.player = player;
     }
 
     public boolean isFasterCrystals() {
-        FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
+        FasterCrystals plugin = FasterCrystals.getInstance();
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
         byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);

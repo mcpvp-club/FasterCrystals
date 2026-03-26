@@ -15,34 +15,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.reknown.fastercrystals.user;
+package xyz.reknown.fastercrystals.repository;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.reknown.fastercrystals.user.CUser;
 
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Users {
-    private final Map<UUID, User> users;
+public class UserRepository {
+    private final ConcurrentHashMap<UUID, CUser> users = new ConcurrentHashMap<>();
 
-    public Users() {
-        this.users = new ConcurrentHashMap<>();
-    }
-
-    public void add(User user) {
-        users.put(user.getPlayer().getUniqueId(), user);
+    public void add(Player player) {
+        users.put(player.getUniqueId(), new CUser(player));
     }
 
     @Nullable
-    public User get(@NotNull Player player) {
+    public CUser get(@NotNull Player player) {
         return get(player.getUniqueId());
     }
 
     @Nullable
-    public User get(@NotNull UUID uuid) {
+    public CUser get(@NotNull UUID uuid) {
         return users.get(uuid);
     }
 

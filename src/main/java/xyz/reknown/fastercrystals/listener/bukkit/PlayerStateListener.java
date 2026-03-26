@@ -15,22 +15,31 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.reknown.fastercrystals.listeners.bukkit;
+package xyz.reknown.fastercrystals.listener.bukkit;
 
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import xyz.reknown.fastercrystals.FasterCrystals;
 
-public class EntitySpawnListener implements Listener {
-    @EventHandler
-    public void onEntitySpawn(EntitySpawnEvent event) {
-        if (event.getEntityType() == EntityType.END_CRYSTAL) {
-            FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-            plugin.getCrystalIds().put(event.getEntity().getEntityId(), (EnderCrystal) event.getEntity());
-        }
+public class PlayerStateListener implements Listener {
+
+    private final FasterCrystals plugin;
+
+    public PlayerStateListener() {
+        this.plugin = FasterCrystals.getInstance();
     }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        plugin.getUserRepository().add(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        plugin.getUserRepository().remove(event.getPlayer().getUniqueId());
+    }
+
 }

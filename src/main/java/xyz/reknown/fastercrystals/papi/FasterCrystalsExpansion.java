@@ -23,7 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.reknown.fastercrystals.FasterCrystals;
-import xyz.reknown.fastercrystals.user.User;
+import xyz.reknown.fastercrystals.user.CUser;
 
 public class FasterCrystalsExpansion extends PlaceholderExpansion {
     @Override
@@ -50,8 +50,8 @@ public class FasterCrystalsExpansion extends PlaceholderExpansion {
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         if (params.equalsIgnoreCase("toggle")) {
             FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-            User user = plugin.getUsers().get(player);
-            return user == null || user.isFasterCrystals() ? "On" : "Off";
+            CUser CUser = plugin.getUserRepository().get(player);
+            return CUser == null || CUser.isFasterCrystals() ? "On" : "Off";
         }
 
         return null;

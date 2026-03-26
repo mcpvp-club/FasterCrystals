@@ -42,8 +42,8 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
 
     private final FasterCrystals plugin;
 
-    public FastercrystalsCommand(FasterCrystals plugin) {
-        this.plugin = plugin;
+    public FastercrystalsCommand() {
+        this.plugin = FasterCrystals.getInstance();
     }
 
     @Override

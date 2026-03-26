@@ -19,7 +19,6 @@ package xyz.reknown.fastercrystals;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
-import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -33,40 +32,51 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.commands.FastercrystalsCommand;
-import xyz.reknown.fastercrystals.listeners.bukkit.*;
-import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
-import xyz.reknown.fastercrystals.listeners.packet.InteractEntityListener;
-import xyz.reknown.fastercrystals.listeners.packet.LastPacketListener;
+import xyz.reknown.fastercrystals.listener.bukkit.CrystalStateListener;
+import xyz.reknown.fastercrystals.listener.bukkit.PlayerStateListener;
+import xyz.reknown.fastercrystals.listener.packet.AnimationListener;
+import xyz.reknown.fastercrystals.listener.packet.InteractEntityListener;
+import xyz.reknown.fastercrystals.listener.packet.LastPacketListener;
 import xyz.reknown.fastercrystals.papi.FasterCrystalsExpansion;
-import xyz.reknown.fastercrystals.user.Users;
+import xyz.reknown.fastercrystals.repository.CrystalRepository;
+import xyz.reknown.fastercrystals.repository.UserRepository;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 public class FasterCrystals extends JavaPlugin {
+
+    private static final int B_STATS_PLUGIN_ID = 22397;
     private static final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
+
+    @Getter
+    private static FasterCrystals instance;
+
+    private UserRepository userRepository;
+    private CrystalRepository crystalRepository;
+
     private List<SimplePacketListenerAbstract> listeners;
-    private Users users;
-    private Map<Integer, EnderCrystal> crystalIds;
+
+    public FasterCrystals() {
+        instance = this;
+    }
 
     @Override
     public void onEnable() {
         FasterCrystalsAPI.init(this);
         saveDefaultConfig();
 
-        this.crystalIds = FoliaScheduler.isFolia() ? new ConcurrentHashMap<>() : new HashMap<>();
-        this.users = new Users();
+        this.userRepository = new UserRepository();
+        this.crystalRepository = new CrystalRepository();
 
-        FastercrystalsCommand command = new FastercrystalsCommand(this);
+        FastercrystalsCommand command = new FastercrystalsCommand();
         getCommand("fastercrystals").setExecutor(command);
         getCommand("fastercrystals").setTabCompleter(command);
 
-        getServer().getPluginManager().registerEvents(new EntityRemoveFromWorldListener(), this);
-        getServer().getPluginManager().registerEvents(new EntitySpawnListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        getServer().getPluginManager().registerEvents(new WorldUnloadListener(), this);
+        getServer().getPluginManager().registerEvents(new CrystalStateListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerStateListener(), this);
 
         this.listeners = List.of(
                 new AnimationListener(),
@@ -82,8 +92,7 @@ public class FasterCrystals extends JavaPlugin {
             new FasterCrystalsExpansion().register();
         }
 
-        int pluginId = 22397;
-        new Metrics(this, pluginId);
+        new Metrics(this, B_STATS_PLUGIN_ID);
     }
 
     @Override
