@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package xyz.reknown.fastercrystals.listeners.packet;
@@ -40,6 +40,16 @@ import xyz.reknown.fastercrystals.enums.AnimPackets;
 import xyz.reknown.fastercrystals.user.User;
 
 public class AnimationListener extends SimplePacketListenerAbstract {
+    private static boolean isAttackDamageReduced(Player player) {
+        PotionEffect weakness = player.getPotionEffect(PotionEffectType.WEAKNESS);
+        int weaknessLevel = weakness != null ? weakness.getAmplifier() + 1 : 0;
+
+        PotionEffect strength = player.getPotionEffect(PotionEffectType.STRENGTH);
+        int strengthLevel = strength != null ? strength.getAmplifier() + 1 : 0;
+
+        return strengthLevel * 3 - weaknessLevel * 4 < 0;
+    }
+
     @Override
     public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
@@ -94,8 +104,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             //     within the bounding box. This causes the distance check to false positive.
             // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
             if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
-                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
-                        player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
                 if (bResult != null) {
                     Block block = bResult.getHitBlock();
                     Vector eyeLocV = eyeLoc.toVector();
@@ -116,15 +125,5 @@ public class AnimationListener extends SimplePacketListenerAbstract {
 
             player.attack(entity);
         });
-    }
-
-    private static boolean isAttackDamageReduced(Player player) {
-        PotionEffect weakness = player.getPotionEffect(PotionEffectType.WEAKNESS);
-        int weaknessLevel = weakness != null ? weakness.getAmplifier() + 1 : 0;
-
-        PotionEffect strength = player.getPotionEffect(PotionEffectType.STRENGTH);
-        int strengthLevel = strength != null ? strength.getAmplifier() + 1 : 0;
-
-        return strengthLevel * 3 - weaknessLevel * 4 < 0;
     }
 }

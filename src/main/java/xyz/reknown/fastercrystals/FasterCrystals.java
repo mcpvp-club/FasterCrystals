@@ -21,6 +21,7 @@ import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import lombok.Getter;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -31,7 +32,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
-import xyz.reknown.fastercrystals.bstats.Metrics;
 import xyz.reknown.fastercrystals.commands.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.listeners.bukkit.*;
 import xyz.reknown.fastercrystals.listeners.packet.AnimationListener;
@@ -45,11 +45,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class FasterCrystals extends JavaPlugin {
+    private static final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
     private List<SimplePacketListenerAbstract> listeners;
     private Users users;
     private Map<Integer, EnderCrystal> crystalIds;
-
-    private static final Set<Material> AIR_TYPES = Set.of(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR);
 
     @Override
     public void onEnable() {

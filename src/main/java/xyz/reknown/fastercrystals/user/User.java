@@ -30,8 +30,10 @@ import xyz.reknown.fastercrystals.enums.AnimPackets;
 @Getter
 public class User {
     private final Player player;
-    @Setter private AnimPackets lastPacket;
-    @Setter private boolean ignoreAnim;
+    @Setter
+    private AnimPackets lastPacket;
+    @Setter
+    private boolean ignoreAnim;
 
     public User(Player player) {
         this.player = player;

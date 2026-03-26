@@ -1,67 +1,78 @@
-/*
- * Copyright (C) 2023-2025 Jyguy
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
- */
-
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
-    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.3.0"
-    id("com.gradleup.shadow") version "8.3.7"
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.run.paper)
+    alias(libs.plugins.resource.factory.bukkit.convention)
+    alias(libs.plugins.paperweight.userdev)
 }
 
 group = "xyz.reknown.fastercrystals"
-version = "2.2.0"
+version = "2.2.1"
 description = "Uses packets to manually break/place crystals"
 
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
-
 java {
-    // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 8 installed for example.
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    disableAutoTargetJvm()
 }
 
 repositories {
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-releases/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle(libs.versions.paper.get())
 
-    compileOnly("me.clip:placeholderapi:2.11.7")
-    compileOnly("com.github.retrooper:packetevents-spigot:2.9.0-SNAPSHOT")
+    compileOnly(libs.packetevents.spigot)
+    compileOnly(libs.placeholderapi)
 
-    compileOnly("org.projectlombok:lombok:1.18.42")
-    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    implementation(libs.bstats.bukkit)
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 }
 
 tasks {
     jar {
-        from(rootDir) {
-            include("LICENSE")
+        enabled = false
+    }
+
+    shadowJar {
+        archiveFileName = "${rootProject.name}-${version}.jar"
+        archiveClassifier = null
+
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang"
         }
+
+        relocate("org.bstats", "xyz.reknown.fastercrystals.libs.bstats")
     }
-    compileJava {
-        // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
-        // See https://openjdk.java.net/jeps/247 for more information.
-        options.release.set(21)
+
+    assemble {
+        dependsOn(shadowJar)
     }
-    javadoc {
-        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+
+    runServer {
+        val mcVersion = libs.versions.paper.get().split("-")[0]
+        minecraftVersion(mcVersion)
+        runDirectory = rootDir.resolve("run/paper/$mcVersion")
+
+        downloadPlugins {
+            url("https://cdn.modrinth.com/data/HYKaKraK/versions/YjTc55NR/packetevents-spigot-2.11.2.jar")
+            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.7.2/ViaVersion-5.7.2.jar")
+            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.7.2/ViaBackwards-5.7.2.jar")
+            url("https://github.com/PlaceholderAPI/PlaceholderAPI/releases/download/2.12.2/PlaceholderAPI-2.12.2.jar")
+        }
+
+        jvmArgs = listOf(
+            "-Dcom.mojang.eula.agree=true",
+            "-DPaper.IgnoreJavaVersion=true"
+        )
     }
+
+    runPaper.folia.registerTask()
 }
 
 // Configure plugin.yml generation
