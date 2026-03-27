@@ -19,13 +19,19 @@ package xyz.reknown.fastercrystals.papi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.reknown.fastercrystals.FasterCrystals;
-import xyz.reknown.fastercrystals.user.User;
+import xyz.reknown.fastercrystals.user.CUser;
 
 public class FasterCrystalsExpansion extends PlaceholderExpansion {
+
+    public final FasterCrystals plugin;
+
+    public FasterCrystalsExpansion() {
+        this.plugin = FasterCrystals.getInstance();
+    }
+
     @Override
     public @NotNull String getAuthor() {
         return "Jyguy";
@@ -49,9 +55,8 @@ public class FasterCrystalsExpansion extends PlaceholderExpansion {
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         if (params.equalsIgnoreCase("toggle")) {
-            FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-            User user = plugin.getUsers().get(player);
-            return user == null || user.isFasterCrystals() ? "On" : "Off";
+            CUser cUser = plugin.getUserRepository().get(player);
+            return cUser == null || cUser.isFasterCrystals() ? "On" : "Off";
         }
 
         return null;

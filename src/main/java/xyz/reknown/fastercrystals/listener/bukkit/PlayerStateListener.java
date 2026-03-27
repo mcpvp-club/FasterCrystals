@@ -12,21 +12,34 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.reknown.fastercrystals.listeners.bukkit;
+package xyz.reknown.fastercrystals.listener.bukkit;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.FasterCrystals;
 
-public class PlayerQuitListener implements Listener {
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        FasterCrystals plugin = JavaPlugin.getPlugin(FasterCrystals.class);
-        plugin.getUsers().remove(event.getPlayer().getUniqueId());
+public class PlayerStateListener implements Listener {
+
+    private final FasterCrystals plugin;
+
+    public PlayerStateListener() {
+        this.plugin = FasterCrystals.getInstance();
     }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        plugin.getUserRepository().add(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        plugin.getUserRepository().remove(event.getPlayer().getUniqueId());
+    }
+
 }

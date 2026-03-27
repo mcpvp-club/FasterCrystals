@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.reknown.fastercrystals.listeners.packet;
+package xyz.reknown.fastercrystals.listener.packet;
 
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
@@ -24,6 +24,7 @@ import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
@@ -37,39 +38,62 @@ import org.jspecify.annotations.NonNull;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
-import xyz.reknown.fastercrystals.user.User;
+import xyz.reknown.fastercrystals.user.CUser;
 
 public class AnimationListener extends SimplePacketListenerAbstract {
+
+    private static final Attribute ENTITY_INTERACTION_ATTRIBUTE = Attribute.PLAYER_ENTITY_INTERACTION_RANGE;
+
+    private final FasterCrystals plugin;
+
+    public AnimationListener() {
+        this.plugin = FasterCrystals.getInstance();
+    }
+
+    private static boolean isAttackDamageReduced(Player player) {
+        PotionEffect weakness = player.getPotionEffect(PotionEffectType.WEAKNESS);
+        int weaknessLevel = weakness != null ? weakness.getAmplifier() + 1 : 0;
+
+        PotionEffect strength = player.getPotionEffect(PotionEffectType.STRENGTH);
+        int strengthLevel = strength != null ? strength.getAmplifier() + 1 : 0;
+
+        return strengthLevel * 3 - weaknessLevel * 4 < 0;
+    }
+
     @Override
     public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
         if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
         if (event.isCancelled()) return;
 
-        FasterCrystals plugin = FasterCrystalsAPI.getInstance().getPlugin();
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
+        final CUser cUser = plugin.getUserRepository().get(player);
 
-        User user = plugin.getUsers().get(player);
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         if (isAttackDamageReduced(player)) return; // ignore reduced hits, tool hits are slow anyway
-        if (user == null || !user.isFasterCrystals()) return;
+        if (cUser == null || !cUser.isFasterCrystals()) return;
 
-        AnimPackets lastPacket = user.getLastPacket();
+        AnimPackets lastPacket = cUser.getLastPacket();
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
+
         FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
-            if (user.isIgnoreAnim()) return; // animation is for inventory drop item
+            if (cUser.isIgnoreAnim()) return; // animation is for inventory drop item
 
             // Ensure the player did not move too far (specifically, to another Folia region)
             // Otherwise, the below will throw an exception for attempting to raytrace from a different thread
             Location newEyeLoc = player.getEyeLocation();
-            if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100) return; // it is unrealistic for a player to move 10 blocks in this time
+            if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100)
+                return; // it is unrealistic for a player to move 10 blocks in this time
+
+            AttributeInstance entityInteractionRange = player.getAttribute(ENTITY_INTERACTION_ATTRIBUTE);
+            if (entityInteractionRange == null) return;
 
             RayTraceResult result = eyeLoc.getWorld().rayTraceEntities(
                     eyeLoc,
                     direction,
-                    player.getAttribute(Attribute.PLAYER_ENTITY_INTERACTION_RANGE).getValue(),
+                    entityInteractionRange.getValue(),
                     0.0,
                     entity -> {
                         if (!((CraftEntity) entity).getHandle().isPickable()) return false;
@@ -94,8 +118,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             //     within the bounding box. This causes the distance check to false positive.
             // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
             if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
-                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction,
-                        player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
                 if (bResult != null) {
                     Block block = bResult.getHitBlock();
                     Vector eyeLocV = eyeLoc.toVector();
@@ -116,15 +139,5 @@ public class AnimationListener extends SimplePacketListenerAbstract {
 
             player.attack(entity);
         });
-    }
-
-    private static boolean isAttackDamageReduced(Player player) {
-        PotionEffect weakness = player.getPotionEffect(PotionEffectType.WEAKNESS);
-        int weaknessLevel = weakness != null ? weakness.getAmplifier() + 1 : 0;
-
-        PotionEffect strength = player.getPotionEffect(PotionEffectType.STRENGTH);
-        int strengthLevel = strength != null ? strength.getAmplifier() + 1 : 0;
-
-        return strengthLevel * 3 - weaknessLevel * 4 < 0;
     }
 }

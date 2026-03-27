@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>. 
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.reknown.fastercrystals.listeners.packet;
+package xyz.reknown.fastercrystals.listener.packet;
 
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
@@ -27,14 +27,20 @@ import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientIn
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
+import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.enums.AnimPackets;
-import xyz.reknown.fastercrystals.user.User;
+import xyz.reknown.fastercrystals.repository.UserRepository;
+import xyz.reknown.fastercrystals.user.CUser;
 
 public class LastPacketListener extends SimplePacketListenerAbstract {
+
+    private final UserRepository userRepository;
+
     public LastPacketListener() {
         // Ensure AnimationListener runs first, see below
         super(PacketListenerPriority.MONITOR);
+        this.userRepository = FasterCrystals.getInstance().getUserRepository();
     }
 
     @Override
@@ -42,22 +48,21 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
         if (!FasterCrystalsAPI.isAvailable()) return;
 
         Player player = event.getPlayer();
-
-        User user = FasterCrystalsAPI.getInstance().getPlugin().getUsers().get(player);
-        if (user == null) return;
+        CUser cUser = userRepository.get(player);
+        if (cUser == null) return;
 
         AnimPackets animPacket = getAnimPacket(event);
 
         // Dropping order is ANIMATION -> WINDOW_CLICK (unlike other actions where ANIMATION is last)
         // So, need to ensure ANIMATION is not processed in the *main thread* if the following packet is inv dropping
         // Even if this is MONITOR priority, it will run before the main thread task in AnimationListener
-        if (user.getLastPacket() == AnimPackets.ANIMATION) {
+        if (cUser.getLastPacket() == AnimPackets.ANIMATION) {
             // Ignore anim if the following packet is inventory dropping or a creative action
-            user.setIgnoreAnim(animPacket == AnimPackets.INV_DROP || animPacket == AnimPackets.CREATIVE_INV_ACTION);
+            cUser.setIgnoreAnim(animPacket == AnimPackets.INV_DROP || animPacket == AnimPackets.CREATIVE_INV_ACTION);
         }
 
         // Still required for other actions (e.g. dropping without inventory)
-        user.setLastPacket(animPacket);
+        cUser.setLastPacket(animPacket);
     }
 
     private AnimPackets getAnimPacket(PacketPlayReceiveEvent event) {
