@@ -22,12 +22,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.reknown.fastercrystals.user.CUser;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UserRepository {
-    private final Map<UUID, CUser> users = new HashMap<>();
+    private final Map<UUID, CUser> users = new ConcurrentHashMap<>();
 
     public void add(Player player) {
         users.put(player.getUniqueId(), new CUser(player));

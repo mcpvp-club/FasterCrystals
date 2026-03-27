@@ -5,10 +5,11 @@ import org.bukkit.entity.EnderCrystal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CrystalRepository {
-    private final ConcurrentHashMap<Integer, EnderCrystal> crystalIds = new ConcurrentHashMap<>();
+    private final Map<Integer, EnderCrystal> crystalIds = new ConcurrentHashMap<>();
 
     public void add(@NotNull EnderCrystal crystal) {
         crystalIds.put(crystal.getEntityId(), crystal);
