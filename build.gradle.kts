@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.reknown.fastercrystals"
-version = "2.2.1"
+version = "2.2.0"
 description = "Uses packets to manually break/place crystals"
 
 java {
@@ -47,6 +47,10 @@ tasks {
             attributes["paperweight-mappings-namespace"] = "mojang"
         }
 
+        from(rootProject.file("LICENSE")) {
+            into("")
+        }
+
         relocate("org.bstats", "xyz.reknown.fastercrystals.libs.bstats")
     }
 
@@ -61,8 +65,8 @@ tasks {
 
         downloadPlugins {
             url("https://cdn.modrinth.com/data/HYKaKraK/versions/YjTc55NR/packetevents-spigot-2.11.2.jar")
-            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.7.2/ViaVersion-5.7.2.jar")
-            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.7.2/ViaBackwards-5.7.2.jar")
+            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.8.0/ViaVersion-5.8.0.jar")
+            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.8.0/ViaBackwards-5.8.0.jar")
             url("https://github.com/PlaceholderAPI/PlaceholderAPI/releases/download/2.12.2/PlaceholderAPI-2.12.2.jar")
         }
 

@@ -47,7 +47,7 @@ public class AnimationListener extends SimplePacketListenerAbstract {
     private final FasterCrystals plugin;
 
     public AnimationListener() {
-        this.plugin = FasterCrystalsAPI.getInstance().getPlugin();
+        this.plugin = FasterCrystals.getInstance();
     }
 
     private static boolean isAttackDamageReduced(Player player) {
@@ -77,10 +77,10 @@ public class AnimationListener extends SimplePacketListenerAbstract {
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
 
-        if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
-        if (cUser.isIgnoreAnim()) return; // animation is for inventory drop item
-
         FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
+            if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
+            if (cUser.isIgnoreAnim()) return; // animation is for inventory drop item
+
             // Ensure the player did not move too far (specifically, to another Folia region)
             // Otherwise, the below will throw an exception for attempting to raytrace from a different thread
             Location newEyeLoc = player.getEyeLocation();

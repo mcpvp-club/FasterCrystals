@@ -55,8 +55,8 @@ public class FasterCrystalsExpansion extends PlaceholderExpansion {
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
         if (params.equalsIgnoreCase("toggle")) {
-            CUser CUser = plugin.getUserRepository().get(player);
-            return CUser == null || CUser.isFasterCrystals() ? "On" : "Off";
+            CUser cUser = plugin.getUserRepository().get(player);
+            return cUser == null || cUser.isFasterCrystals() ? "On" : "Off";
         }
 
         return null;

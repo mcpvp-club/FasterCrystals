@@ -60,7 +60,7 @@ public class FasterCrystals extends JavaPlugin {
     private List<SimplePacketListenerAbstract> listeners;
 
     public FasterCrystals() {
-        instance = this;
+        FasterCrystals.instance = this;
     }
 
     @Override

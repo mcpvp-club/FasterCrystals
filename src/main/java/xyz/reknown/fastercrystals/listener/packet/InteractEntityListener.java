@@ -52,7 +52,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
     private final CrystalRepository crystalRepository;
 
     public InteractEntityListener() {
-        this.plugin = FasterCrystalsAPI.getInstance().getPlugin();
+        this.plugin = FasterCrystals.getInstance();
         this.userRepository = plugin.getUserRepository();
         this.crystalRepository = plugin.getCrystalRepository();
     }

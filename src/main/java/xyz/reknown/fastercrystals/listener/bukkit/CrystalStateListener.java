@@ -36,8 +36,8 @@ public class CrystalStateListener implements Listener {
     private final CrystalRepository crystalRepository;
 
     public CrystalStateListener() {
-        plugin = FasterCrystals.getInstance();
-        crystalRepository = plugin.getCrystalRepository();
+        this.plugin = FasterCrystals.getInstance();
+        this.crystalRepository = plugin.getCrystalRepository();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
