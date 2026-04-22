@@ -103,6 +103,9 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return List.of("reload", "on", "off");
+        if (args.length != 1) return List.of();
+        return List.of("reload", "on", "off").stream()
+                .filter(s -> s.startsWith(args[0].toLowerCase()))
+                .toList();
     }
 }
