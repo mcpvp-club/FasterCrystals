@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2025 Jyguy
+ * Copyright (C) 2023-2026 Jyguy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package xyz.reknown.fastercrystals.repository;
 
 import org.bukkit.World;
