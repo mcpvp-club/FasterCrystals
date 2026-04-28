@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CrystalRepository {
@@ -40,7 +41,50 @@ public class CrystalRepository {
         crystalIds.remove(id);
     }
 
+    /**
+     * Checks whether a crystal with the given entity id is tracked.
+     *
+     * @param id the entity id
+     * @return true if the crystal is tracked
+     */
+    public boolean contains(int id) {
+        return crystalIds.containsKey(id);
+    }
+
+    /**
+     * Returns the number of currently tracked crystals.
+     *
+     * @return the count of tracked crystals
+     */
+    public int size() {
+        return crystalIds.size();
+    }
+
+    /**
+     * Removes all tracked crystals belonging to the specified world.
+     * <p>
+     * Uses the world's {@link UUID} for comparison to avoid potential issues
+     * with entity references to unloaded worlds throwing exceptions.
+     *
+     * @param world the world whose crystals should be removed
+     */
     public void unloadWorldCrystals(@NotNull World world) {
-        crystalIds.entrySet().removeIf(entry -> entry.getValue().getWorld().equals(world));
+        UUID worldUid = world.getUID();
+        crystalIds.entrySet().removeIf(entry -> {
+            EnderCrystal crystal = entry.getValue();
+            try {
+                return crystal.getWorld().getUID().equals(worldUid);
+            } catch (Exception e) {
+                // Entity reference is no longer valid, remove it
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Removes all tracked crystals. Called during plugin disable.
+     */
+    public void clear() {
+        crystalIds.clear();
     }
 }
