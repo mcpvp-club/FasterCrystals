@@ -3,6 +3,11 @@
 # false = FasterCrystals is disabled by default
 default-state: true
 
+# Block raytrace reach distances for checking if a block is in front of the crystal.
+# These are vanilla defaults. Only change if your server modifies player reach.
+creative-mode-reach: 5.0
+survival-mode-reach: 4.5
+
 # Whenever you see the <state> placeholder, it will be one of these.
 state:
   'on': '<yellow>on</yellow>'

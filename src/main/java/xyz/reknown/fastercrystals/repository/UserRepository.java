@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserRepository {
     private final Map<UUID, CUser> users = new ConcurrentHashMap<>();
 
-    public void add(Player player) {
+    public void add(@NotNull Player player) {
         users.put(player.getUniqueId(), new CUser(player));
     }
 
@@ -45,5 +45,31 @@ public class UserRepository {
 
     public void remove(@NotNull UUID uuid) {
         users.remove(uuid);
+    }
+
+    /**
+     * Checks whether a user with the given UUID is currently tracked.
+     *
+     * @param uuid the player's UUID
+     * @return true if the user is tracked
+     */
+    public boolean contains(@NotNull UUID uuid) {
+        return users.containsKey(uuid);
+    }
+
+    /**
+     * Returns the number of currently tracked users.
+     *
+     * @return the count of tracked users
+     */
+    public int size() {
+        return users.size();
+    }
+
+    /**
+     * Removes all tracked users. Called during plugin disable.
+     */
+    public void clear() {
+        users.clear();
     }
 }

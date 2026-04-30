@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.commands.FastercrystalsCommand;
+import xyz.reknown.fastercrystals.event.FastCrystalPlaceEvent;
 import xyz.reknown.fastercrystals.listener.bukkit.CrystalStateListener;
 import xyz.reknown.fastercrystals.listener.bukkit.PlayerStateListener;
 import xyz.reknown.fastercrystals.listener.packet.AnimationListener;
@@ -40,6 +41,7 @@ import xyz.reknown.fastercrystals.listener.packet.LastPacketListener;
 import xyz.reknown.fastercrystals.papi.FasterCrystalsExpansion;
 import xyz.reknown.fastercrystals.repository.CrystalRepository;
 import xyz.reknown.fastercrystals.repository.UserRepository;
+import xyz.reknown.fastercrystals.util.ConfigCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,7 @@ public class FasterCrystals extends JavaPlugin {
 
     private UserRepository userRepository;
     private CrystalRepository crystalRepository;
+    private ConfigCache configCache;
 
     private List<SimplePacketListenerAbstract> listeners;
 
@@ -68,6 +71,7 @@ public class FasterCrystals extends JavaPlugin {
         FasterCrystalsAPI.init(this);
         saveDefaultConfig();
 
+        this.configCache = new ConfigCache(this);
         this.userRepository = new UserRepository();
         this.crystalRepository = new CrystalRepository();
 
@@ -92,27 +96,67 @@ public class FasterCrystals extends JavaPlugin {
             new FasterCrystalsExpansion().register();
         }
 
+        // Register any players that are already online (e.g. after a reload)
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (userRepository.get(player) == null) {
+                userRepository.add(player);
+            }
+        }
+
         new Metrics(this, B_STATS_PLUGIN_ID);
     }
 
     @Override
     public void onDisable() {
         FasterCrystalsAPI.shutdown();
-        for (SimplePacketListenerAbstract listener : this.listeners) {
-            PacketEvents.getAPI().getEventManager().unregisterListener(listener);
+
+        if (this.listeners != null) {
+            for (SimplePacketListenerAbstract listener : this.listeners) {
+                PacketEvents.getAPI().getEventManager().unregisterListener(listener);
+            }
+        }
+
+        if (this.crystalRepository != null) {
+            this.crystalRepository.clear();
+        }
+        if (this.userRepository != null) {
+            this.userRepository.clear();
         }
     }
 
-    public void spawnCrystal(Location loc, Player player, ItemStack item) {
-        Location clonedLoc = loc.clone().subtract(0.5, 0.0, 0.5);
-        if (!AIR_TYPES.contains(clonedLoc.getBlock().getType())) return;
+    /**
+     * Reloads the plugin configuration and refreshes the cached config values.
+     */
+    public void reloadPluginConfig() {
+        reloadConfig();
+        configCache.reload(this);
+    }
 
-        clonedLoc.add(0.5, 1.0, 0.5);
-        List<Entity> nearbyEntities = new ArrayList<>(clonedLoc.getWorld().getNearbyEntities(clonedLoc, 0.5, 1, 0.5,
+    /**
+     * Attempts to spawn a crystal at the given location on behalf of the specified player.
+     * <p>
+     * Fires a {@link FastCrystalPlaceEvent} before spawning. If the event is cancelled,
+     * the crystal will not be placed.
+     *
+     * @param loc    the target location (block top)
+     * @param player the player placing the crystal
+     * @param item   the crystal item stack to consume from
+     */
+    public void spawnCrystal(Location loc, Player player, ItemStack item) {
+        Location blockLoc = loc.clone().subtract(0.5, 0.0, 0.5);
+        if (!AIR_TYPES.contains(blockLoc.getBlock().getType())) return;
+
+        Location spawnLoc = blockLoc.add(0.5, 1.0, 0.5);
+        List<Entity> nearbyEntities = new ArrayList<>(spawnLoc.getWorld().getNearbyEntities(spawnLoc, 0.5, 1, 0.5,
                 entity -> !(entity instanceof Player p) || p.getGameMode() != GameMode.SPECTATOR));
 
         if (nearbyEntities.isEmpty()) {
-            loc.getWorld().spawn(clonedLoc.subtract(0.0, 1.0, 0.0), EnderCrystal.class, entity -> entity.setShowingBottom(false));
+            FastCrystalPlaceEvent placeEvent = new FastCrystalPlaceEvent(player, spawnLoc.clone(), item.clone());
+            Bukkit.getPluginManager().callEvent(placeEvent);
+            if (placeEvent.isCancelled()) return;
+
+            loc.getWorld().spawn(spawnLoc.subtract(0.0, 1.0, 0.0), EnderCrystal.class,
+                    entity -> entity.setShowingBottom(false));
 
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
                 item.setAmount(item.getAmount() - 1);

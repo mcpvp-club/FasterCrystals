@@ -21,17 +21,16 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.reknown.fastercrystals.FasterCrystals;
+import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
+import xyz.reknown.fastercrystals.util.ConfigCache;
 
 import java.util.List;
 import java.util.Set;
@@ -41,25 +40,17 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
     private static final Set<String> OFF_STRINGS = Set.of("false", "off");
 
     private final FasterCrystals plugin;
+    private final FasterCrystalsAPI api;
 
     public FastercrystalsCommand() {
         this.plugin = FasterCrystals.getInstance();
+        this.api = FasterCrystalsAPI.getInstance();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length == 1) {
-            String subCommand = args[0].toLowerCase();
-            if (subCommand.equals("reload")) {
-                if (!sender.hasPermission("fastercrystals.reload")) {
-                    sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
-                    return true;
-                }
-
-                plugin.reloadConfig();
-                sender.sendMessage(Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN));
-                return true;
-            }
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            return handleReload(sender);
         }
 
         if (!(sender instanceof Player player)) {
@@ -72,40 +63,66 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
-
         boolean toggle;
         if (args.length > 0) {
             String toggleStr = args[0].toLowerCase();
-            if (ON_STRINGS.contains(toggleStr)) toggle = true;
-            else if (OFF_STRINGS.contains(toggleStr)) toggle = false;
-            else {
+            if (ON_STRINGS.contains(toggleStr)) {
+                toggle = true;
+            } else if (OFF_STRINGS.contains(toggleStr)) {
+                toggle = false;
+            } else {
                 sender.sendMessage(Component.text("Invalid input: " + toggleStr, NamedTextColor.RED));
                 return true;
             }
         } else {
-            byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
-            toggle = pdc.getOrDefault(key, PersistentDataType.BYTE, defaultState) == 0;
+            toggle = !api.isFastCrystalsEnabled(player);
         }
 
-        pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
+        api.setFastCrystals(player, toggle);
+        sendToggleMessage(player, toggle);
+        return true;
+    }
 
-        String stateKey = "state." + (toggle ? "on" : "off");
-        String state = plugin.getConfig().getString(stateKey);
-        String text = plugin.getConfig().getString("text");
+    /**
+     * Handles the reload subcommand, checking permissions and reloading the config.
+     *
+     * @param sender the command sender
+     * @return always true
+     */
+    private boolean handleReload(@NotNull CommandSender sender) {
+        if (!sender.hasPermission("fastercrystals.reload")) {
+            sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
+            return true;
+        }
+
+        plugin.reloadPluginConfig();
+        sender.sendMessage(Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN));
+        return true;
+    }
+
+    /**
+     * Sends the toggle state message to the player using the cached config values.
+     *
+     * @param player the player to send the message to
+     * @param state  the new toggle state
+     */
+    private void sendToggleMessage(@NotNull Player player, boolean state) {
+        ConfigCache configCache = plugin.getConfigCache();
+        String stateText = state ? configCache.getStateOnText() : configCache.getStateOffText();
+        String text = configCache.getToggleText();
 
         MiniMessage mm = MiniMessage.miniMessage();
-        Component component = mm.deserialize(text, Placeholder.parsed("state", state));
+        Component component = mm.deserialize(text, Placeholder.parsed("state", stateText));
         player.sendMessage(component);
-        return true;
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length != 1) return List.of();
+
+        String input = args[0].toLowerCase();
         return List.of("reload", "on", "off").stream()
-                .filter(s -> s.startsWith(args[0].toLowerCase()))
+                .filter(s -> s.startsWith(input))
                 .toList();
     }
 }
