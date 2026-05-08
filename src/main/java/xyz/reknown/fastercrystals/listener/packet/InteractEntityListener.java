@@ -71,19 +71,19 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         CUser cUser = userRepository.get(player);
         if (cUser == null || !cUser.isFasterCrystals()) return;
 
-        ItemStack item;
-        if (packet.getHand() == InteractionHand.MAIN_HAND) item = player.getInventory().getItemInMainHand();
-        else item = player.getInventory().getItemInOffHand();
-
-        if (item.getType() != Material.END_CRYSTAL) return;
-
         int entityId = packet.getEntityId();
         EnderCrystal entity = crystalRepository.get(entityId);
         if (entity == null) return;
 
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
+        InteractionHand hand = packet.getHand();
         FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
+            ItemStack currentItem = hand == InteractionHand.MAIN_HAND
+                    ? player.getInventory().getItemInMainHand()
+                    : player.getInventory().getItemInOffHand();
+            if (currentItem.getType() != Material.END_CRYSTAL) return;
+
             AttributeInstance blockInteractionRange = player.getAttribute(BLOCK_INTERACTION_ATTRIBUTE);
             if (blockInteractionRange == null) return;
 
@@ -98,7 +98,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
             Location blockLoc = entity.getLocation().subtract(0.5, 1.0, 0.5);
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
-            plugin.spawnCrystal(entity.getLocation(), player, item);
+            plugin.spawnCrystal(entity.getLocation(), player, currentItem);
         });
     }
 }
