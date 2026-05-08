@@ -64,9 +64,9 @@ tasks {
         runDirectory = rootDir.resolve("run/paper/$mcVersion")
 
         downloadPlugins {
-            url("https://cdn.modrinth.com/data/HYKaKraK/versions/YjTc55NR/packetevents-spigot-2.11.2.jar")
-            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.8.0/ViaVersion-5.8.0.jar")
-            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.8.0/ViaBackwards-5.8.0.jar")
+            url("https://cdn.modrinth.com/data/HYKaKraK/versions/ap8qHs7D/packetevents-spigot-2.12.1.jar")
+            url("https://github.com/ViaVersion/ViaVersion/releases/download/5.9.1/ViaVersion-5.9.1.jar")
+            url("https://github.com/ViaVersion/ViaBackwards/releases/download/5.9.1/ViaBackwards-5.9.1.jar")
             url("https://github.com/PlaceholderAPI/PlaceholderAPI/releases/download/2.12.2/PlaceholderAPI-2.12.2.jar")
         }
 
