@@ -38,9 +38,6 @@ public class ConfigCache {
     private String stateOffText;
     private String toggleText;
 
-    private double creativeModeReach;
-    private double survivalModeReach;
-
     public ConfigCache(FasterCrystals plugin) {
         reload(plugin);
     }
@@ -59,8 +56,5 @@ public class ConfigCache {
         this.stateOnText = config.getString("state.on", "<yellow>on</yellow>");
         this.stateOffText = config.getString("state.off", "<yellow>off</yellow>");
         this.toggleText = config.getString("text", "<gold>Turned</gold> <state> <gold>your FasterCrystals setting.</gold>");
-
-        this.creativeModeReach = config.getDouble("creative-mode-reach", 5.0);
-        this.survivalModeReach = config.getDouble("survival-mode-reach", 4.5);
     }
 }
