@@ -48,6 +48,7 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
         if (!FasterCrystalsAPI.isAvailable()) return;
 
         Player player = event.getPlayer();
+        if (player == null) return;
         CUser cUser = userRepository.get(player);
         if (cUser == null) return;
 
