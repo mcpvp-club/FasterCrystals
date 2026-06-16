@@ -5,7 +5,7 @@ default-state: true
 
 # Whenever you see the <state> placeholder, it will be one of these.
 state:
-  'on': '<yellow>on</yellow>'
-  'off': '<yellow>off</yellow>'
+  'on': '<yellow><lang:options.on></yellow>'
+  'off': '<yellow><lang:options.off></yellow>'
 
 text: '<gold>Turned</gold> <state> <gold>your FasterCrystals setting.</gold>'

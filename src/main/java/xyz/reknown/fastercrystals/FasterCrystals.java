@@ -19,6 +19,7 @@ package xyz.reknown.fastercrystals;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -71,9 +72,9 @@ public class FasterCrystals extends JavaPlugin {
         this.userRepository = new UserRepository();
         this.crystalRepository = new CrystalRepository();
 
-        FastercrystalsCommand command = new FastercrystalsCommand();
-        getCommand("fastercrystals").setExecutor(command);
-        getCommand("fastercrystals").setTabCompleter(command);
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
+                event.registrar().register(FastercrystalsCommand.createCommand(this))
+        );
 
         getServer().getPluginManager().registerEvents(new CrystalStateListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerStateListener(), this);

@@ -17,95 +17,91 @@
 
 package xyz.reknown.fastercrystals.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.reknown.fastercrystals.FasterCrystals;
 
 import java.util.List;
-import java.util.Set;
 
-public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
-    private static final Set<String> ON_STRINGS = Set.of("true", "on");
-    private static final Set<String> OFF_STRINGS = Set.of("false", "off");
+public final class FastercrystalsCommand {
+    private FastercrystalsCommand() {}
 
-    private final FasterCrystals plugin;
+    public static LiteralCommandNode<CommandSourceStack> createCommand(FasterCrystals plugin) {
+        final NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
+        final MiniMessage mm = MiniMessage.miniMessage();
 
-    public FastercrystalsCommand() {
-        this.plugin = FasterCrystals.getInstance();
+        return Commands.literal("fastercrystals")
+                .requires(src -> src.getSender().hasPermission("fastercrystals.toggle")
+                        || src.getSender().hasPermission("fastercrystals.reload"))
+                .executes(ctx -> defaultToggle(ctx, plugin, key, mm))
+                .then(Commands.literal("reload")
+                        .requires(src -> src.getSender().hasPermission("fastercrystals.reload"))
+                        .executes(ctx -> reload(ctx, plugin)))
+                .then(Commands.argument("state", StringArgumentType.word())
+                        .requires(src -> src.getSender() instanceof Player
+                                && src.getSender().hasPermission("fastercrystals.toggle"))
+                        .suggests((ctx, builder) -> {
+                            for (String s : List.of("on", "off", "true", "false"))
+                                if (s.startsWith(builder.getRemainingLowerCase())) builder.suggest(s);
+                            return builder.buildFuture();
+                        })
+                        .executes(ctx -> {
+                            Player player = (Player) ctx.getSource().getSender();
+                            boolean value = parseBoolean(StringArgumentType.getString(ctx, "state"));
+                            return apply(player, value, plugin, key, mm);
+                        }))
+                .build();
     }
 
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length == 1) {
-            String subCommand = args[0].toLowerCase();
-            if (subCommand.equals("reload")) {
-                if (!sender.hasPermission("fastercrystals.reload")) {
-                    sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
-                    return true;
-                }
-
-                plugin.reloadConfig();
-                sender.sendMessage(Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN));
-                return true;
-            }
-        }
-
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("Only players can use this command!", NamedTextColor.RED));
-            return true;
-        }
-
-        if (!sender.hasPermission("fastercrystals.toggle")) {
-            sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
-            return true;
-        }
-
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
-
-        boolean toggle;
-        if (args.length > 0) {
-            String toggleStr = args[0].toLowerCase();
-            if (ON_STRINGS.contains(toggleStr)) toggle = true;
-            else if (OFF_STRINGS.contains(toggleStr)) toggle = false;
-            else {
-                sender.sendMessage(Component.text("Invalid input: " + toggleStr, NamedTextColor.RED));
-                return true;
-            }
-        } else {
-            byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
-            toggle = pdc.getOrDefault(key, PersistentDataType.BYTE, defaultState) == 0;
-        }
-
-        pdc.set(key, PersistentDataType.BYTE, (byte) (toggle ? 1 : 0x0));
-
-        String stateKey = "state." + (toggle ? "on" : "off");
-        String state = plugin.getConfig().getString(stateKey);
-        String text = plugin.getConfig().getString("text");
-
-        MiniMessage mm = MiniMessage.miniMessage();
-        Component component = mm.deserialize(text, Placeholder.parsed("state", state));
-        player.sendMessage(component);
-        return true;
+    private static int reload(CommandContext<CommandSourceStack> ctx, FasterCrystals plugin) {
+        plugin.reloadConfig();
+        ctx.getSource().getSender().sendMessage(
+                Component.text("Reloaded FasterCrystals config!", NamedTextColor.GREEN)
+        );
+        return Command.SINGLE_SUCCESS;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length != 1) return List.of();
-        return List.of("reload", "on", "off").stream()
-                .filter(s -> s.startsWith(args[0].toLowerCase()))
-                .toList();
+    private static int defaultToggle(CommandContext<CommandSourceStack> ctx, FasterCrystals plugin, NamespacedKey key, MiniMessage mm) throws CommandSyntaxException {
+        Player player = requirePlayer(ctx.getSource());
+        byte def = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
+        boolean value = player.getPersistentDataContainer()
+                .getOrDefault(key, PersistentDataType.BYTE, def) == 0;
+        return apply(player, value, plugin, key, mm);
+    }
+
+    private static int apply(Player player, boolean value, FasterCrystals plugin, NamespacedKey key, MiniMessage mm) {
+        player.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) (value ? 1 : 0));
+        var cfg = plugin.getConfig();
+        player.sendMessage(mm.deserialize(
+                cfg.getString("text", ""),
+                Placeholder.parsed("state", cfg.getString("state." + (value ? "on" : "off"), ""))
+        ));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static Player requirePlayer(CommandSourceStack src) throws CommandSyntaxException {
+        if (!(src.getSender() instanceof Player p))
+            throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand().create();
+        return p;
+    }
+
+    private static boolean parseBoolean(String input) throws CommandSyntaxException {
+        return switch (input.toLowerCase()) {
+            case "on", "true" -> true;
+            case "off", "false" -> false;
+            default -> throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.readerInvalidBool().create(input);
+        };
     }
 }
