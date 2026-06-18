@@ -154,7 +154,7 @@ public class FasterCrystals extends JavaPlugin {
         if (nearbyEntities.isEmpty()) {
             spawnLoc.subtract(0.0, 1.0, 0.0);
 
-            FastCrystalPlaceEvent placeEvent = new FastCrystalPlaceEvent(player, spawnLoc.clone(), item.clone());
+            FastCrystalPlaceEvent placeEvent = new FastCrystalPlaceEvent(player, spawnLoc.clone(), item);
             Bukkit.getPluginManager().callEvent(placeEvent);
             if (placeEvent.isCancelled()) return;
 
