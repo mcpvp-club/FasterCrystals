@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import xyz.reknown.fastercrystals.FasterCrystals;
+import xyz.reknown.fastercrystals.user.CUser;
 
 public class FasterCrystalsAPI {
     private static FasterCrystalsAPI instance;
@@ -78,6 +79,15 @@ public class FasterCrystalsAPI {
     }
 
     /**
+     * Returns the {@link NamespacedKey} used for the fast crystals PDC toggle.
+     *
+     * @return the namespaced key
+     */
+    public NamespacedKey getFastCrystalsKey() {
+        return fastCrystalsKey;
+    }
+
+    /**
      * Sets the FasterCrystals toggle state for a specific player.
      *
      * @param player  the player whose toggle state will be updated
@@ -96,7 +106,7 @@ public class FasterCrystalsAPI {
      */
     public boolean isFastCrystalsEnabled(Player player) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
+        byte defaultState = plugin.getConfigCache().getDefaultStateByte();
         return pdc.getOrDefault(fastCrystalsKey, PersistentDataType.BYTE, defaultState) == 1;
     }
 
@@ -105,9 +115,25 @@ public class FasterCrystalsAPI {
      * If it was enabled, it will be disabled, and vice versa.
      *
      * @param player the player whose toggle state will be flipped
+     * @return the new toggle state (true = enabled, false = disabled)
      */
-    public void toggleFastCrystals(Player player) {
+    public boolean toggleFastCrystals(Player player) {
         boolean newState = !isFastCrystalsEnabled(player);
         setFastCrystals(player, newState);
+        return newState;
+    }
+
+    /**
+     * Checks if FasterCrystals is currently enabled for a specific player
+     * using the cached {@link CUser} object from the user repository.
+     * <p>
+     * This method is faster than {@link #isFastCrystalsEnabled(Player)} when the
+     * CUser is already available, as it avoids an additional map lookup.
+     *
+     * @param cUser the cached user object
+     * @return true if enabled, false otherwise
+     */
+    public boolean isFastCrystalsEnabled(CUser cUser) {
+        return cUser.isFasterCrystals();
     }
 }
