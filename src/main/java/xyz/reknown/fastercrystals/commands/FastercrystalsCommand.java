@@ -83,12 +83,6 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    /**
-     * Handles the reload subcommand, checking permissions and reloading the config.
-     *
-     * @param sender the command sender
-     * @return always true
-     */
     private boolean handleReload(@NotNull CommandSender sender) {
         if (!sender.hasPermission("fastercrystals.reload")) {
             sender.sendMessage(Component.text("You do not have permissions to do this!", NamedTextColor.RED));
@@ -100,12 +94,6 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    /**
-     * Sends the toggle state message to the player using the cached config values.
-     *
-     * @param player the player to send the message to
-     * @param state  the new toggle state
-     */
     private void sendToggleMessage(@NotNull Player player, boolean state) {
         ConfigCache configCache = plugin.getConfigCache();
         String stateText = state ? configCache.getStateOnText() : configCache.getStateOffText();

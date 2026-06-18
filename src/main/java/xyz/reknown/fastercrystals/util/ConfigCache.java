@@ -42,11 +42,6 @@ public class ConfigCache {
         reload(plugin);
     }
 
-    /**
-     * Reloads all cached configuration values from the plugin's config.
-     *
-     * @param plugin the plugin instance to read config from
-     */
     public void reload(FasterCrystals plugin) {
         FileConfiguration config = plugin.getConfig();
 

@@ -41,32 +41,18 @@ public class CrystalRepository {
         crystalIds.remove(id);
     }
 
-    /**
-     * Checks whether a crystal with the given entity id is tracked.
-     *
-     * @param id the entity id
-     * @return true if the crystal is tracked
-     */
     public boolean contains(int id) {
         return crystalIds.containsKey(id);
     }
 
-    /**
-     * Returns the number of currently tracked crystals.
-     *
-     * @return the count of tracked crystals
-     */
     public int size() {
         return crystalIds.size();
     }
 
     /**
-     * Removes all tracked crystals belonging to the specified world.
-     * <p>
-     * Uses the world's {@link UUID} for comparison to avoid potential issues
-     * with entity references to unloaded worlds throwing exceptions.
+     * Untracks all crystals belonging to the specified world.
      *
-     * @param world the world whose crystals should be removed
+     * @param world the world whose crystals should be untracked
      */
     public void unloadWorldCrystals(@NotNull World world) {
         UUID worldUid = world.getUID();
@@ -81,9 +67,6 @@ public class CrystalRepository {
         });
     }
 
-    /**
-     * Removes all tracked crystals. Called during plugin disable.
-     */
     public void clear() {
         crystalIds.clear();
     }

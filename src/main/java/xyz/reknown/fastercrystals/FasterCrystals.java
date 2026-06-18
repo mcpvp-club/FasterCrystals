@@ -124,9 +124,6 @@ public class FasterCrystals extends JavaPlugin {
         }
     }
 
-    /**
-     * Reloads the plugin configuration and refreshes the cached config values.
-     */
     public void reloadPluginConfig() {
         reloadConfig();
         configCache.reload(this);

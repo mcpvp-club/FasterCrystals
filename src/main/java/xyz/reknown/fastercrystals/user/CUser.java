@@ -28,11 +28,6 @@ import xyz.reknown.fastercrystals.enums.AnimPackets;
 
 @Getter
 public class CUser {
-
-    /**
-     * Cached {@link NamespacedKey} to avoid creating a new instance on every PDC lookup.
-     * The key never changes at runtime, so a single static instance is sufficient.
-     */
     private static final NamespacedKey FAST_CRYSTALS_KEY =
             new NamespacedKey(FasterCrystals.getInstance(), "fastcrystals");
 
@@ -47,24 +42,9 @@ public class CUser {
         this.player = player;
     }
 
-    /**
-     * Checks whether FasterCrystals is enabled for this user by reading the
-     * persistent data container with the cached key and default state.
-     *
-     * @return true if fast crystals is enabled for this user
-     */
     public boolean isFasterCrystals() {
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         byte defaultState = FasterCrystals.getInstance().getConfigCache().getDefaultStateByte();
         return pdc.getOrDefault(FAST_CRYSTALS_KEY, PersistentDataType.BYTE, defaultState) == 1;
-    }
-
-    /**
-     * Returns the cached {@link NamespacedKey} used for the fast crystals toggle.
-     *
-     * @return the fast crystals namespaced key
-     */
-    public static NamespacedKey getFastCrystalsKey() {
-        return FAST_CRYSTALS_KEY;
     }
 }

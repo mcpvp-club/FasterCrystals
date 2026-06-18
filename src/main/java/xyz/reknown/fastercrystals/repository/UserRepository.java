@@ -47,28 +47,14 @@ public class UserRepository {
         users.remove(uuid);
     }
 
-    /**
-     * Checks whether a user with the given UUID is currently tracked.
-     *
-     * @param uuid the player's UUID
-     * @return true if the user is tracked
-     */
     public boolean contains(@NotNull UUID uuid) {
         return users.containsKey(uuid);
     }
 
-    /**
-     * Returns the number of currently tracked users.
-     *
-     * @return the count of tracked users
-     */
     public int size() {
         return users.size();
     }
 
-    /**
-     * Removes all tracked users. Called during plugin disable.
-     */
     public void clear() {
         users.clear();
     }
