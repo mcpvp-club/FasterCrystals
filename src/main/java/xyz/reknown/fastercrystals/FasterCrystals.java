@@ -143,19 +143,22 @@ public class FasterCrystals extends JavaPlugin {
      * @param item   the crystal item stack to consume from
      */
     public void spawnCrystal(Location loc, Player player, ItemStack item) {
-        Location blockLoc = loc.clone().subtract(0.5, 0.0, 0.5);
-        if (!AIR_TYPES.contains(blockLoc.getBlock().getType())) return;
+        Location spawnLoc = loc.clone();
+        if (!AIR_TYPES.contains(spawnLoc.getBlock().getType())) return;
 
-        Location spawnLoc = blockLoc.add(0.5, 1.0, 0.5);
+        // Temporarily offset for nearby entities scanning
+        spawnLoc.add(0.0, 1.0, 0.0);
         List<Entity> nearbyEntities = new ArrayList<>(spawnLoc.getWorld().getNearbyEntities(spawnLoc, 0.5, 1, 0.5,
                 entity -> !(entity instanceof Player p) || p.getGameMode() != GameMode.SPECTATOR));
 
         if (nearbyEntities.isEmpty()) {
+            spawnLoc.subtract(0.0, 1.0, 0.0);
+
             FastCrystalPlaceEvent placeEvent = new FastCrystalPlaceEvent(player, spawnLoc.clone(), item.clone());
             Bukkit.getPluginManager().callEvent(placeEvent);
             if (placeEvent.isCancelled()) return;
 
-            loc.getWorld().spawn(spawnLoc.subtract(0.0, 1.0, 0.0), EnderCrystal.class,
+            loc.getWorld().spawn(spawnLoc, EnderCrystal.class,
                     entity -> entity.setShowingBottom(false));
 
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
