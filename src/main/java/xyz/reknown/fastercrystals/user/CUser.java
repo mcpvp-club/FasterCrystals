@@ -28,10 +28,13 @@ import xyz.reknown.fastercrystals.enums.AnimPackets;
 
 @Getter
 public class CUser {
+    private static final NamespacedKey FAST_CRYSTALS_KEY =
+            new NamespacedKey(FasterCrystals.getInstance(), "fastcrystals");
+
     private final Player player;
 
     @Setter
-    private AnimPackets lastPacket;
+    private AnimPackets lastPacket = AnimPackets.MISC;
     @Setter
     private boolean ignoreAnim;
 
@@ -40,10 +43,8 @@ public class CUser {
     }
 
     public boolean isFasterCrystals() {
-        FasterCrystals plugin = FasterCrystals.getInstance();
         PersistentDataContainer pdc = player.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(plugin, "fastcrystals");
-        byte defaultState = (byte) (plugin.getConfig().getBoolean("default-state", true) ? 1 : 0);
-        return pdc.getOrDefault(key, PersistentDataType.BYTE, defaultState) == 1;
+        byte defaultState = FasterCrystals.getInstance().getConfigCache().getDefaultStateByte();
+        return pdc.getOrDefault(FAST_CRYSTALS_KEY, PersistentDataType.BYTE, defaultState) == 1;
     }
 }

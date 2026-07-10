@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserRepository {
     private final Map<UUID, CUser> users = new ConcurrentHashMap<>();
 
-    public void add(Player player) {
+    public void add(@NotNull Player player) {
         users.put(player.getUniqueId(), new CUser(player));
     }
 
@@ -45,5 +45,17 @@ public class UserRepository {
 
     public void remove(@NotNull UUID uuid) {
         users.remove(uuid);
+    }
+
+    public boolean contains(@NotNull UUID uuid) {
+        return users.containsKey(uuid);
+    }
+
+    public int size() {
+        return users.size();
+    }
+
+    public void clear() {
+        users.clear();
     }
 }

@@ -118,7 +118,9 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             //     within the bounding box. This causes the distance check to false positive.
             // Instead, ignore block raytrace checks if the crystal bounding box contains the eye vector.
             if (!entity.getBoundingBox().contains(eyeLoc.toVector())) {
-                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, player.getGameMode() == GameMode.CREATIVE ? 5.0 : 4.5);
+                AttributeInstance blockInteractionRange = player.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE);
+                if (blockInteractionRange == null) return;
+                RayTraceResult bResult = eyeLoc.getWorld().rayTraceBlocks(eyeLoc, direction, blockInteractionRange.getValue());
                 if (bResult != null) {
                     Block block = bResult.getHitBlock();
                     Vector eyeLocV = eyeLoc.toVector();

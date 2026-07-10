@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CrystalRepository {
@@ -40,7 +41,33 @@ public class CrystalRepository {
         crystalIds.remove(id);
     }
 
+    public boolean contains(int id) {
+        return crystalIds.containsKey(id);
+    }
+
+    public int size() {
+        return crystalIds.size();
+    }
+
+    /**
+     * Untracks all crystals belonging to the specified world.
+     *
+     * @param world the world whose crystals should be untracked
+     */
     public void unloadWorldCrystals(@NotNull World world) {
-        crystalIds.entrySet().removeIf(entry -> entry.getValue().getWorld().equals(world));
+        UUID worldUid = world.getUID();
+        crystalIds.entrySet().removeIf(entry -> {
+            EnderCrystal crystal = entry.getValue();
+            try {
+                return crystal.getWorld().getUID().equals(worldUid);
+            } catch (Exception e) {
+                // Entity reference is no longer valid, remove it
+                return true;
+            }
+        });
+    }
+
+    public void clear() {
+        crystalIds.clear();
     }
 }
