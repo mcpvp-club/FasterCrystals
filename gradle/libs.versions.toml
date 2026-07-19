@@ -1,5 +1,5 @@
 [versions]
-packetevents = "2.11.2"
+packetevents = "2.13.0"
 paper = "1.20.6-R0.1-SNAPSHOT"
 bstats = "3.1.0"
 placeholderapi = "2.11.7"
