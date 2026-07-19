@@ -95,6 +95,8 @@ public class LastPacketListener extends SimplePacketListenerAbstract {
             if (wrapper.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
                 return AnimPackets.ATTACK;
             }
+        } else if (event.getPacketType() == PacketType.Play.Client.ATTACK) {
+            return AnimPackets.ATTACK;
         }
 
         return AnimPackets.MISC;
