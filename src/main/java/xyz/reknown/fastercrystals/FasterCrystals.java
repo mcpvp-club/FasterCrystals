@@ -146,7 +146,7 @@ public class FasterCrystals extends JavaPlugin {
         // Temporarily offset for nearby entities scanning
         spawnLoc.add(0.0, 1.0, 0.0);
         List<Entity> nearbyEntities = new ArrayList<>(spawnLoc.getWorld().getNearbyEntities(spawnLoc, 0.5, 1, 0.5,
-                entity -> !(entity instanceof Player p) || p.getGameMode() != GameMode.SPECTATOR));
+                entity -> !(entity instanceof Player p) || (p.getGameMode() != GameMode.SPECTATOR && player.canSee(p))));
 
         if (nearbyEntities.isEmpty()) {
             spawnLoc.subtract(0.0, 1.0, 0.0);
