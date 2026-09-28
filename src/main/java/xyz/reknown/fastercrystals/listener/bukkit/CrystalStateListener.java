@@ -17,6 +17,7 @@
 
 package xyz.reknown.fastercrystals.listener.bukkit;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
 import org.bukkit.entity.EnderCrystal;
@@ -24,7 +25,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.repository.CrystalRepository;
@@ -40,8 +40,8 @@ public class CrystalStateListener implements Listener {
         this.crystalRepository = plugin.getCrystalRepository();
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onEntitySpawn(EntitySpawnEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onEntityAddToWorld(EntityAddToWorldEvent event) {
         if (event.getEntityType() != EntityType.END_CRYSTAL) return;
         crystalRepository.add((EnderCrystal) event.getEntity());
     }

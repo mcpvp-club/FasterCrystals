@@ -32,6 +32,7 @@ import xyz.reknown.fastercrystals.FasterCrystals;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.util.ConfigCache;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -108,8 +109,15 @@ public class FastercrystalsCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length != 1) return List.of();
 
+        List<String> options = new ArrayList<>();
+        if (sender.hasPermission("fastercrystals.reload")) options.add("reload");
+        if (sender.hasPermission("fastercrystals.toggle")) {
+            options.add("on");
+            options.add("off");
+        }
+
         String input = args[0].toLowerCase();
-        return List.of("reload", "on", "off").stream()
+        return options.stream()
                 .filter(s -> s.startsWith(input))
                 .toList();
     }
