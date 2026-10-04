@@ -33,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.reknown.fastercrystals.api.FasterCrystalsAPI;
 import xyz.reknown.fastercrystals.commands.FastercrystalsCommand;
 import xyz.reknown.fastercrystals.event.FastCrystalPlaceEvent;
+import xyz.reknown.fastercrystals.listener.bukkit.CommandListener;
 import xyz.reknown.fastercrystals.listener.bukkit.CrystalStateListener;
 import xyz.reknown.fastercrystals.listener.bukkit.PlayerStateListener;
 import xyz.reknown.fastercrystals.listener.packet.AnimationListener;
@@ -81,6 +82,7 @@ public class FasterCrystals extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new CrystalStateListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerStateListener(), this);
+        getServer().getPluginManager().registerEvents(new CommandListener(), this);
 
         this.listeners = List.of(
                 new AnimationListener(),
