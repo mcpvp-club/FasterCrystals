@@ -61,6 +61,7 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
     public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
         if (event.getPacketType() != PacketType.Play.Client.INTERACT_ENTITY) return;
+        if (event.isCancelled()) return;
 
         WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
         if (packet.getAction() != WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT) return;
