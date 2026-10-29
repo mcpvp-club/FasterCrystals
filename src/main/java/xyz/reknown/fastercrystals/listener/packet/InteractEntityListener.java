@@ -23,6 +23,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.InteractionHand;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -80,7 +81,14 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
         InteractionHand hand = packet.getHand();
-        FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
+        FoliaScheduler.getEntityScheduler().run(player, plugin, task -> {
+            if (!player.isOnline()) return;
+
+            // Follow the player without raytracing a stale world or a region we no longer own.
+            Location newEyeLoc = player.getEyeLocation();
+            if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100) return;
+            if (FoliaScheduler.isFolia() && !Bukkit.isOwnedByCurrentRegion(eyeLoc)) return;
+
             ItemStack currentItem = hand == InteractionHand.MAIN_HAND
                     ? player.getInventory().getItemInMainHand()
                     : player.getInventory().getItemInOffHand();
@@ -101,6 +109,6 @@ public class InteractEntityListener extends SimplePacketListenerAbstract {
             if (!result.getHitBlock().getLocation().equals(blockLoc)) return;
 
             plugin.spawnCrystal(entity.getLocation(), player, currentItem);
-        });
+        }, null);
     }
 }
