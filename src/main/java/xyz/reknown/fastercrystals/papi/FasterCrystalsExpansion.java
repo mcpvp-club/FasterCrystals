@@ -48,6 +48,11 @@ public class FasterCrystalsExpansion extends PlaceholderExpansion {
     }
 
     @Override
+    public @NotNull String getRequiredPlugin() {
+        return plugin.getName();
+    }
+
+    @Override
     public boolean persist() {
         return true;
     }
