@@ -15,7 +15,10 @@ java {
     disableAutoTargetJvm()
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 repositories {
+    mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.codemc.io/repository/maven-releases/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
@@ -32,9 +35,22 @@ dependencies {
 
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.core)
+    mockitoAgent(libs.mockito.core) { isTransitive = false }
+    testImplementation(libs.packetevents.spigot)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+        jvmArgs("-javaagent:${mockitoAgent.asPath}")
+        workingDir = temporaryDir
+    }
+
     jar {
         enabled = false
     }
