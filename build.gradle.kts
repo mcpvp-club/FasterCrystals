@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "xyz.reknown.fastercrystals"
-version = "2.2.2"
+version = "2.3.0"
 description = "Uses packets to manually break/place crystals"
 
 java {
