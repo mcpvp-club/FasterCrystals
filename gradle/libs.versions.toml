@@ -4,6 +4,8 @@ paper = "1.20.6-R0.1-SNAPSHOT"
 bstats = "3.1.0"
 placeholderapi = "2.11.7"
 lombok = "1.18.44"
+junit = "5.11.4"
+mockito = "5.15.2"
 
 shadow = "9.4.0"
 run-paper = "3.0.2"
@@ -15,6 +17,10 @@ packetevents-spigot = { group = "com.github.retrooper", name = "packetevents-spi
 bstats-bukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
 placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "placeholderapi" }
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

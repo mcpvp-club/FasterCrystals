@@ -21,6 +21,7 @@ import com.github.retrooper.packetevents.event.SimplePacketListenerAbstract;
 import com.github.retrooper.packetevents.event.simple.PacketPlayReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import io.github.retrooper.packetevents.util.folia.FoliaScheduler;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -64,29 +65,35 @@ public class AnimationListener extends SimplePacketListenerAbstract {
     public void onPacketPlayReceive(@NonNull PacketPlayReceiveEvent event) {
         if (!FasterCrystalsAPI.isAvailable()) return;
         if (event.getPacketType() != PacketType.Play.Client.ANIMATION) return;
-        if (event.isCancelled()) return;
 
         final Player player = event.getPlayer();
         if (player == null) return;
         final CUser cUser = plugin.getUserRepository().get(player);
+        if (cUser == null) return;
+        // Even an ignored swing must have its own token: its following drop packet
+        // must not suppress an earlier swing that is still waiting to execute.
+        CUser.PendingAnimation animation = cUser.beginAnimation();
 
+        if (event.isCancelled()) return;
         if (player.getGameMode() == GameMode.SPECTATOR) return;
         if (isAttackDamageReduced(player)) return; // ignore reduced hits, tool hits are slow anyway
-        if (cUser == null || !cUser.isFasterCrystals()) return;
+        if (!cUser.isFasterCrystals()) return;
 
         AnimPackets lastPacket = cUser.getLastPacket();
         Location eyeLoc = player.getEyeLocation();
         Vector direction = eyeLoc.getDirection();
 
-        FoliaScheduler.getRegionScheduler().run(plugin, eyeLoc, task -> {
+        FoliaScheduler.getEntityScheduler().run(player, plugin, task -> {
             if (lastPacket == AnimPackets.IGNORE) return; // animation is for hotbar drop item/placement/use item
-            if (cUser.isIgnoreAnim()) return; // animation is for inventory drop item
+            if (animation.isIgnored()) return; // animation is for inventory drop item
+            if (!player.isOnline()) return;
 
-            // Ensure the player did not move too far (specifically, to another Folia region)
-            // Otherwise, the below will throw an exception for attempting to raytrace from a different thread
+            // The entity scheduler follows the player, but the captured ray origin may
+            // now belong to another world or region. Distance alone cannot detect a region boundary.
             Location newEyeLoc = player.getEyeLocation();
             if (eyeLoc.getWorld() != newEyeLoc.getWorld() || newEyeLoc.distanceSquared(eyeLoc) > 100)
                 return; // it is unrealistic for a player to move 10 blocks in this time
+            if (FoliaScheduler.isFolia() && !Bukkit.isOwnedByCurrentRegion(eyeLoc)) return;
 
             AttributeInstance entityInteractionRange = player.getAttribute(ENTITY_INTERACTION_ATTRIBUTE);
             if (entityInteractionRange == null) return;
@@ -141,6 +148,6 @@ public class AnimationListener extends SimplePacketListenerAbstract {
             }
 
             player.attack(entity);
-        });
+        }, null);
     }
 }

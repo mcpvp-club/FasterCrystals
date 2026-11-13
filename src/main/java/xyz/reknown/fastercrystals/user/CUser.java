@@ -17,6 +17,7 @@
 
 package xyz.reknown.fastercrystals.user;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.NamespacedKey;
@@ -35,11 +36,32 @@ public class CUser {
 
     @Setter
     private AnimPackets lastPacket = AnimPackets.MISC;
-    @Setter
-    private boolean ignoreAnim;
+    private volatile boolean ignoreAnim;
+    @Getter(AccessLevel.NONE)
+    private PendingAnimation pendingAnimation = new PendingAnimation();
 
     public CUser(Player player) {
         this.player = player;
+    }
+
+    /**
+     * Starts tracking a swing before any packet-specific early returns. Each queued
+     * callback keeps its own token so a later swing cannot change its suppression state.
+     */
+    public PendingAnimation beginAnimation() {
+        pendingAnimation = new PendingAnimation();
+        ignoreAnim = false;
+        return pendingAnimation;
+    }
+
+    public void setIgnoreAnim(boolean ignoreAnim) {
+        this.ignoreAnim = ignoreAnim;
+        pendingAnimation.ignored = ignoreAnim;
+    }
+
+    @Getter
+    public static final class PendingAnimation {
+        private volatile boolean ignored;
     }
 
     public boolean isFasterCrystals() {
